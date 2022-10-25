@@ -1,0 +1,17 @@
+{
+	"name": "readdle/app-store-server-api",
+	"description": "This library implements App Store Server REST API and App Store Server Notifications V2 which allows to manage customer's transactions and interact with server-to-server notifications respectively",
+	"type": "library",
+	"license": "MIT",
+	"version": "1.0.0",
+	"php": ">=8.0",
+	"autoload": {
+		"psr-4": {
+			"Readdle\\AppStoreServerAPI\\": "src/"
+		}
+	},
+	"require": {
+		"ext-json": "*",
+		"ext-openssl": "*"
+	}
+}
