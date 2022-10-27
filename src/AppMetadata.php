@@ -91,6 +91,9 @@ final class AppMetadata
         return $this->bundleVersion;
     }
 
+    /**
+     * @return self::ENVIRONMENT__*
+     */
     public function getEnvironment(): string
     {
         return $this->environment;

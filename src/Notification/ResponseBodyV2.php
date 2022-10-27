@@ -297,11 +297,17 @@ final class ResponseBodyV2
         return $responseBodyV2;
     }
 
+    /**
+     * @return self::NOTIFICATION_TYPE__*
+     */
     public function getNotificationType(): string
     {
         return $this->notificationType;
     }
 
+    /**
+     * @return null|self::SUBTYPE__*
+     */
     public function getSubtype(): ?string
     {
         return $this->subtype;

@@ -95,27 +95,27 @@ final class RenewalInfo
     /**
      * The reason a subscription expired.
      */
-    private string $expirationIntent;
+    private ?int $expirationIntent;
 
     /**
      * The time when the billing grace period for subscription renewals expires.
      */
-    private int $gracePeriodExpiresDate;
+    private ?int $gracePeriodExpiresDate;
 
     /**
      * The Boolean value that indicates whether the App Store is attempting to automatically renew an expired subscription.
      */
-    private bool $isInBillingRetryPeriod;
+    private ?bool $isInBillingRetryPeriod;
 
     /**
      * The offer code or the promotional offer identifier.
      */
-    private string $offerIdentifier;
+    private ?string $offerIdentifier;
 
     /**
      * The type of subscription offer.
      */
-    private int $offerType;
+    private ?int $offerType;
 
     /**
      * The original transaction identifier of a purchase.
@@ -125,7 +125,7 @@ final class RenewalInfo
     /**
      * The status that indicates whether the auto-renewable subscription is subject to a price increase.
      */
-    private int $priceIncreaseStatus;
+    private ?int $priceIncreaseStatus;
 
     /**
      * The product identifier of the in-app purchase.
@@ -177,37 +177,46 @@ final class RenewalInfo
         return $this->autoRenewProductId;
     }
 
+    /**
+     * @return self::AUTO_RENEW_STATUS__*
+     */
     public function getAutoRenewStatus(): int
     {
         return $this->autoRenewStatus;
     }
 
+    /**
+     * @return self::ENVIRONMENT__*
+     */
     public function getEnvironment(): string
     {
         return $this->environment;
     }
 
-    public function getExpirationIntent(): string
+    /**
+     * @return null|self::EXPIRATION_INTENT__*
+     */
+    public function getExpirationIntent(): ?int
     {
         return $this->expirationIntent;
     }
 
-    public function getGracePeriodExpiresDate(): int
+    public function getGracePeriodExpiresDate(): ?int
     {
         return $this->gracePeriodExpiresDate;
     }
 
-    public function getIsInBillingRetryPeriod(): bool
+    public function getIsInBillingRetryPeriod(): ?bool
     {
         return $this->isInBillingRetryPeriod;
     }
 
-    public function getOfferIdentifier(): string
+    public function getOfferIdentifier(): ?string
     {
         return $this->offerIdentifier;
     }
 
-    public function getOfferType(): int
+    public function getOfferType(): ?int
     {
         return $this->offerType;
     }
@@ -217,7 +226,7 @@ final class RenewalInfo
         return $this->originalTransactionId;
     }
 
-    public function getPriceIncreaseStatus(): int
+    public function getPriceIncreaseStatus(): ?int
     {
         return $this->priceIncreaseStatus;
     }

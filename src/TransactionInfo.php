@@ -77,7 +77,7 @@ final class TransactionInfo
      * A UUID that associates the transaction with a user on your own service.
      * If the app doesn't provide an appAccountToken, this string is empty.
      */
-    private string $appAccountToken;
+    private ?string $appAccountToken;
 
     /**
      * The bundle identifier of the app.
@@ -102,18 +102,18 @@ final class TransactionInfo
     /**
      * A Boolean value that indicates whether the user upgraded to another subscription.
      */
-    private bool $isUpgraded;
+    private ?bool $isUpgraded;
 
     /**
      * The identifier that contains the promo code or the promotional offer identifier.
      * NOTE: This field applies only when the offerType is either promotional offer or subscription offer code.
      */
-    private string $offerIdentifier;
+    private ?string $offerIdentifier;
 
     /**
      * A value that represents the promotional offer type.
      */
-    private string $offerType;
+    private ?int $offerType;
 
     /**
      * The UNIX time, in milliseconds, that represents the purchase date of the original transaction identifier.
@@ -144,12 +144,12 @@ final class TransactionInfo
     /**
      * The UNIX time, in milliseconds, that the App Store refunded the transaction or revoked it from Family Sharing.
      */
-    private int $revocationDate;
+    private ?int $revocationDate;
 
     /**
      * The reason that the App Store refunded the transaction or revoked it from Family Sharing.
      */
-    private int $revocationReason;
+    private ?int $revocationReason;
 
     /**
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature (JWS) data.
@@ -206,7 +206,7 @@ final class TransactionInfo
         return $transactionInfo;
     }
 
-    public function getAppAccountToken(): string
+    public function getAppAccountToken(): ?string
     {
         return $this->appAccountToken;
     }
@@ -216,6 +216,9 @@ final class TransactionInfo
         return $this->bundleId;
     }
 
+    /**
+     * @return self::ENVIRONMENT__*
+     */
     public function getEnvironment(): string
     {
         return $this->environment;
@@ -226,22 +229,28 @@ final class TransactionInfo
         return $this->expiresDate;
     }
 
+    /**
+     * @return self::IN_APP_OWNERSHIP_TYPE__*
+     */
     public function getInAppOwnershipType(): string
     {
         return $this->inAppOwnershipType;
     }
 
-    public function getIsUpgraded(): bool
+    public function getIsUpgraded(): ?bool
     {
         return $this->isUpgraded;
     }
 
-    public function getOfferIdentifier(): string
+    public function getOfferIdentifier(): ?string
     {
         return $this->offerIdentifier;
     }
 
-    public function getOfferType(): string
+    /**
+     * @return null|self::OFFER_TYPE__*
+     */
+    public function getOfferType(): ?int
     {
         return $this->offerType;
     }
@@ -271,12 +280,15 @@ final class TransactionInfo
         return $this->quantity;
     }
 
-    public function getRevocationDate(): int
+    public function getRevocationDate(): ?int
     {
         return $this->revocationDate;
     }
 
-    public function getRevocationReason(): int
+    /**
+     * @return null|self::REVOCATION_REASON__*
+     */
+    public function getRevocationReason(): ?int
     {
         return $this->revocationReason;
     }
@@ -296,6 +308,9 @@ final class TransactionInfo
         return $this->transactionId;
     }
 
+    /**
+     * @return self::TYPE__*
+     */
     public function getType(): string
     {
         return $this->type;
