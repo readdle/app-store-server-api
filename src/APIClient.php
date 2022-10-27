@@ -33,7 +33,7 @@ final class APIClient
     /**
      * @throws InvalidArgumentException
      */
-    public function __construct(int $environment, string $issuerId, string $bundleId, string $privateKey, string $keyId)
+    public function __construct(int $environment, string $issuerId, string $bundleId, string $key, string $keyId)
     {
         if (!in_array($environment, [self::ENVIRONMENT_PRODUCTION, self::ENVIRONMENT_SANDBOX])) {
             throw new InvalidArgumentException(
@@ -44,7 +44,7 @@ final class APIClient
 
         $this->environment = $environment;
         $this->payload = new Payload($issuerId, $bundleId);
-        $this->key = new Key($privateKey, $keyId);
+        $this->key = new Key($key, $keyId);
     }
 
     /**

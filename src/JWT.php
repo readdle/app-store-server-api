@@ -46,6 +46,8 @@ final class JWT
         self::HEADER_X5C,
     ];
 
+    private static bool $unsafeMode = false;
+
     /**
      * @throws JWTCreationException
      */
@@ -71,7 +73,7 @@ final class JWT
 
         $previousErrorHandler = set_error_handler($errorHandler);
         $signature = ''; // will be filled by the next call
-        $signed = openssl_sign(join('.', $segments), $signature, $key->getPrivateKey(), self::ALGORITHM['opensslAlgorithm']);
+        $signed = openssl_sign(join('.', $segments), $signature, $key->getKey(), self::ALGORITHM['opensslAlgorithm']);
         set_error_handler($previousErrorHandler);
 
         if (!$signed) {
@@ -88,6 +90,24 @@ final class JWT
     }
 
     /**
+     * WARNING! This method DOESN'T check and DOESN'T validate notification AT ALL!
+     * Use it FOR TESTING PURPOSES ONLY!
+     *
+     * Turns unsafe mode on/off.
+     * Unsafe mode means that notifications will be parsed without any validation.
+     */
+    public static function unsafeMode(bool $state = true): bool
+    {
+        $previousState = self::$unsafeMode;
+        self::$unsafeMode = $state;
+        return $previousState;
+    }
+
+    /**
+     * Parses notification, checks its headers, certificates chain, signature.
+     * Returns decoded payload.
+     * Throws an exception if notification is malformed or verification failed.
+     *
      * @throws MalformedJWTException
      */
     public static function parse(string $jwt, ?string $rootCertificate = null): array
@@ -115,6 +135,10 @@ final class JWT
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new MalformedJWTException('Payload JSON could not be decoded');
+        }
+
+        if (self::$unsafeMode) {
+            return $payload;
         }
 
         $missingHeaders = [];
@@ -146,7 +170,6 @@ final class JWT
         } catch (Exception $e) {
             throw new MalformedJWTException('Signature verification failed: ' . $e->getMessage());
         }
-
 
         return $payload;
     }
