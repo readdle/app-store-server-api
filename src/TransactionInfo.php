@@ -77,7 +77,7 @@ final class TransactionInfo
      * A UUID that associates the transaction with a user on your own service.
      * If the app doesn't provide an appAccountToken, this string is empty.
      */
-    private ?string $appAccountToken;
+    private ?string $appAccountToken = null;
 
     /**
      * The bundle identifier of the app.
@@ -92,7 +92,7 @@ final class TransactionInfo
     /**
      * The UNIX time, in milliseconds, the subscription expires or renews.
      */
-    private int $expiresDate;
+    private ?int $expiresDate = null;
 
     /**
      * A string that describes whether the transaction was purchased by the user, or is available to them through Family Sharing.
@@ -102,18 +102,18 @@ final class TransactionInfo
     /**
      * A Boolean value that indicates whether the user upgraded to another subscription.
      */
-    private ?bool $isUpgraded;
+    private ?bool $isUpgraded = null;
 
     /**
      * The identifier that contains the promo code or the promotional offer identifier.
      * NOTE: This field applies only when the offerType is either promotional offer or subscription offer code.
      */
-    private ?string $offerIdentifier;
+    private ?string $offerIdentifier = null;
 
     /**
      * A value that represents the promotional offer type.
      */
-    private ?int $offerType;
+    private ?int $offerType = null;
 
     /**
      * The UNIX time, in milliseconds, that represents the purchase date of the original transaction identifier.
@@ -144,12 +144,12 @@ final class TransactionInfo
     /**
      * The UNIX time, in milliseconds, that the App Store refunded the transaction or revoked it from Family Sharing.
      */
-    private ?int $revocationDate;
+    private ?int $revocationDate = null;
 
     /**
      * The reason that the App Store refunded the transaction or revoked it from Family Sharing.
      */
-    private ?int $revocationReason;
+    private ?int $revocationReason = null;
 
     /**
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature (JWS) data.
@@ -159,7 +159,7 @@ final class TransactionInfo
     /**
      * The identifier of the subscription group the subscription belongs to.
      */
-    private string $subscriptionGroupIdentifier;
+    private ?string $subscriptionGroupIdentifier = null;
 
     /**
      * The unique identifier of the transaction.
@@ -174,7 +174,7 @@ final class TransactionInfo
     /**
      * The unique identifier of subscription purchase events across devices, including subscription renewals.
      */
-    private string $webOrderLineItemId;
+    private ?string $webOrderLineItemId = null;
 
     private function __construct()
     {
@@ -186,7 +186,7 @@ final class TransactionInfo
         $transactionInfo = new self();
         $typeCaster = Helper::arrayTypeCastGenerator($payload, [
             'int' => [
-                'expiresDate', 'originalPurchaseDate', 'purchaseDate',
+                'expiresDate', 'offerType', 'originalPurchaseDate', 'purchaseDate',
                 'quantity', 'revocationDate', 'revocationReason', 'signedDate',
             ],
             'bool' => [
@@ -194,7 +194,7 @@ final class TransactionInfo
             ],
             'string' => [
                 'appAccountToken', 'bundleId', 'environment', 'inAppOwnershipType',
-                'offerIdentifier', 'offerType', 'originalTransactionId', 'productId',
+                'offerIdentifier', 'originalTransactionId', 'productId',
                 'subscriptionGroupIdentifier', 'transactionId', 'type', 'webOrderLineItemId',
             ],
         ]);
@@ -224,7 +224,7 @@ final class TransactionInfo
         return $this->environment;
     }
 
-    public function getExpiresDate(): int
+    public function getExpiresDate(): ?int
     {
         return $this->expiresDate;
     }
@@ -298,7 +298,7 @@ final class TransactionInfo
         return $this->signedDate;
     }
 
-    public function getSubscriptionGroupIdentifier(): string
+    public function getSubscriptionGroupIdentifier(): ?string
     {
         return $this->subscriptionGroupIdentifier;
     }
@@ -316,7 +316,7 @@ final class TransactionInfo
         return $this->type;
     }
 
-    public function getWebOrderLineItemId(): string
+    public function getWebOrderLineItemId(): ?string
     {
         return $this->webOrderLineItemId;
     }
