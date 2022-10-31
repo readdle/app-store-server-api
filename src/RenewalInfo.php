@@ -95,27 +95,27 @@ final class RenewalInfo
     /**
      * The reason a subscription expired.
      */
-    private ?int $expirationIntent;
+    private ?int $expirationIntent = null;
 
     /**
      * The time when the billing grace period for subscription renewals expires.
      */
-    private ?int $gracePeriodExpiresDate;
+    private ?int $gracePeriodExpiresDate = null;
 
     /**
      * The Boolean value that indicates whether the App Store is attempting to automatically renew an expired subscription.
      */
-    private ?bool $isInBillingRetryPeriod;
+    private ?bool $isInBillingRetryPeriod = null;
 
     /**
      * The offer code or the promotional offer identifier.
      */
-    private ?string $offerIdentifier;
+    private ?string $offerIdentifier = null;
 
     /**
      * The type of subscription offer.
      */
-    private ?int $offerType;
+    private ?int $offerType = null;
 
     /**
      * The original transaction identifier of a purchase.
@@ -125,7 +125,7 @@ final class RenewalInfo
     /**
      * The status that indicates whether the auto-renewable subscription is subject to a price increase.
      */
-    private ?int $priceIncreaseStatus;
+    private ?int $priceIncreaseStatus = null;
 
     /**
      * The product identifier of the in-app purchase.
