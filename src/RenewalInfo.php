@@ -153,15 +153,15 @@ final class RenewalInfo
         $renewalInfo = new self();
         $typeCaster = Helper::arrayTypeCastGenerator($payload, [
             'int' => [
-                'autoRenewStatus', 'gracePeriodExpiresDate', 'offerType',
+                'autoRenewStatus', 'expirationIntent', 'gracePeriodExpiresDate', 'offerType',
                 'priceIncreaseStatus', 'recentSubscriptionStartDate', 'signedDate',
             ],
             'bool' => [
                 'isInBillingRetryPeriod',
             ],
             'string' => [
-                'autoRenewProductId', 'environment', 'expirationIntent',
-                'offerIdentifier', 'originalTransactionId', 'productId',
+                'autoRenewProductId', 'environment', 'offerIdentifier',
+                'originalTransactionId', 'productId',
             ],
         ]);
 
