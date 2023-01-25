@@ -8,8 +8,10 @@ use Readdle\AppStoreServerAPI\Exception\HTTPRequestFailed;
 use Readdle\AppStoreServerAPI\Exception\InvalidArgumentException;
 use Readdle\AppStoreServerAPI\Exception\InvalidImplementationException;
 use Readdle\AppStoreServerAPI\Exception\MalformedResponseException;
+use Readdle\AppStoreServerAPI\Request\AbstractQueryParams;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\Request\GetTransactionHistory;
+use Readdle\AppStoreServerAPI\Request\GetTransactionHistoryQueryParams;
 use Readdle\AppStoreServerAPI\Request\RequestTestNotification;
 use Readdle\AppStoreServerAPI\Response\AbstractResponse;
 use Readdle\AppStoreServerAPI\Response\SendTestNotificationResponse;
@@ -18,7 +20,7 @@ use function call_user_func;
 use function in_array;
 use function is_subclass_of;
 
-final class APIClient
+final class APIClient implements APIClientInterface
 {
     const PRODUCTION_BASE_URL = 'https://api.storekit.itunes.apple.com/inApps';
     const SANDBOX_BASE_URL = 'https://api.storekit-sandbox.itunes.apple.com/inApps';
@@ -55,8 +57,10 @@ final class APIClient
      * @throws InvalidImplementationException
      * @throws MalformedResponseException
      */
-    public function getTransactionHistory(string $originalTransactionId, array $queryParams = []): HistoryResponse
-    {
+    public function getTransactionHistory(
+        string $originalTransactionId,
+        ?GetTransactionHistoryQueryParams $queryParams = null
+    ): HistoryResponse {
         /**
          * @var HistoryResponse $response
          */
@@ -86,7 +90,7 @@ final class APIClient
         return $response;
     }
 
-    private function createRequest(string $requestClass, array $queryParams = []): AbstractRequest
+    private function createRequest(string $requestClass, ?AbstractQueryParams $queryParams = null): AbstractRequest
     {
         /** @var AbstractRequest $request */
         $request = new $requestClass($this->key, $this->payload, $queryParams);
@@ -112,7 +116,7 @@ final class APIClient
         string $requestClass,
         string $responseClass,
         array $requestUrlParams = [],
-        array $requestQueryParams = []
+        ?AbstractQueryParams $requestQueryParams = null
     ): AbstractResponse {
         if (
             !is_subclass_of($requestClass, AbstractRequest::class)
