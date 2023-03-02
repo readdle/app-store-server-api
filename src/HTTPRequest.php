@@ -40,7 +40,7 @@ final class HTTPRequest
 
         $errorHandler = function (int $code, string $error) use ($url, &$errorCode, &$errorMessage): bool {
             $errorPattern =
-                '/^file_get_contents\(http(?:s)?:[\/\w\.-]+\): '
+                '/^file_get_contents\(https?:[\/\-\w.?=]+\): '
                 . 'Failed to open stream: HTTP request failed! '
                 . 'HTTP\/\d\.\d (\d+) ([\w\s]+)$/';
 
