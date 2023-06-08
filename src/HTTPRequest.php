@@ -8,9 +8,9 @@ use Readdle\AppStoreServerAPI\Exception\HTTPRequestFailed;
 use Readdle\AppStoreServerAPI\Exception\JWTCreationException;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use function file_get_contents;
-use function set_error_handler;
+use function preg_match;
+use function reset;
 use function stream_context_create;
-use function trim;
 
 final class HTTPRequest
 {
@@ -29,30 +29,12 @@ final class HTTPRequest
         $options = [
             'http' => [
                 'method' => $request->getHTTPMethod(),
-                'header' => 'Authorization: Bearer ' . $token,
+                'header' => "Authorization: Bearer $token",
+                'ignore_errors' => true,
             ]
         ];
 
         $url = $request->getURL();
-
-        $errorCode = 0;
-        $errorMessage = '';
-
-        $errorHandler = function (int $code, string $error) use ($url, &$errorCode, &$errorMessage): bool {
-            $errorPattern =
-                '/^file_get_contents\(https?:[\/\-\w.?=]+\): '
-                . 'Failed to open stream: HTTP request failed! '
-                . 'HTTP\/\d\.\d (\d+) ([\w\s]+)$/';
-
-            if (preg_match($errorPattern, trim($error), $m)) {
-                $errorCode = (int) $m[1];
-                $errorMessage = $m[2];
-            }
-
-            return true;
-        };
-
-        $previousErrorHandler = set_error_handler($errorHandler);
 
         $response = file_get_contents(
             $url,
@@ -60,10 +42,17 @@ final class HTTPRequest
             stream_context_create($options)
         );
 
-        set_error_handler($previousErrorHandler);
+        /** @noinspection PhpNullIsNotCompatibleWithParameterInspection */
+        $statusLine = reset($http_response_header);
 
-        if ($response === false) {
-            throw new HTTPRequestFailed($errorMessage, $errorCode);
+        if (!preg_match('/^HTTP\/\d\.\d (?<statusCode>\d+) (?<reasonPhrase>[^\n\r]+)$/', $statusLine, $matches)) {
+            throw new HTTPRequestFailed("Wrong Status-Line: $statusLine", -1);
+        }
+
+        $statusCode = (int) $matches['statusCode'];
+
+        if ($statusCode !== 200) {
+            throw new HTTPRequestFailed($response, $statusCode);
         }
 
         return $response;
