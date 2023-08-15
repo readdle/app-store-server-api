@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use function min;
+use function time;
+
 final class Payload
 {
     const MAX_TTL = 3600;
@@ -15,11 +18,12 @@ final class Payload
     /**
      * Audience.
      * Constant value.
+     * @noinspection SpellCheckingInspection
      */
     private string $audience = 'appstoreconnect-v1';
 
     /**
-     * App’s bundle ID (Ex: “com.example.testbundleid2021”).
+     * App's bundle ID (Ex: “com.example.testBundleId2021”).
      */
     private string $bundleId;
 
@@ -33,6 +37,9 @@ final class Payload
         $this->ttl = $ttl === 0 ? self::MAX_TTL : min($ttl, self::MAX_TTL);
     }
 
+    /**
+     * @return array<string, int|string>
+     */
     public function toArray(): array
     {
         $time = time();

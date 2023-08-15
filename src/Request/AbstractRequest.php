@@ -5,7 +5,9 @@ namespace Readdle\AppStoreServerAPI\Request;
 
 use Readdle\AppStoreServerAPI\Key;
 use Readdle\AppStoreServerAPI\Payload;
-use function array_key_exists;
+use Readdle\AppStoreServerAPI\RequestBody\AbstractRequestBody;
+use Readdle\AppStoreServerAPI\RequestQueryParams\AbstractRequestQueryParams;
+
 use function array_merge;
 use function preg_replace_callback;
 use function trim;
@@ -15,23 +17,63 @@ abstract class AbstractRequest
     const HTTP_METHOD_GET = 'GET';
     const HTTP_METHOD_POST = 'POST';
 
-    protected array $urlParams = ['baseUrl' => ''];
+    protected Key $key;
+    protected Payload $payload;
+    protected ?AbstractRequestQueryParams $queryParams;
+    protected ?AbstractRequestBody $body;
+
+    /** @var array<string, mixed> */
+    protected array $urlVars = ['baseUrl' => ''];
 
     public function __construct(
-        protected Key $key,
-        protected Payload $payload,
-        protected ?AbstractQueryParams $queryParams = null
+        Key $key,
+        Payload $payload,
+        ?AbstractRequestQueryParams $queryParams,
+        ?AbstractRequestBody $body
     ) {
+        $this->key = $key;
+        $this->payload = $payload;
+        $this->queryParams = $queryParams;
+        $this->body = $body;
     }
 
-    public function setURLParams(array $urlParams): void
+    public function getKey(): Key
     {
-        $this->urlParams = array_merge($this->urlParams, $urlParams);
+        return $this->key;
     }
 
-    abstract public function getHTTPMethod(): string;
+    public function getPayload(): Payload
+    {
+        return $this->payload;
+    }
 
-    public function getURL(): string
+    public function getQueryParams(): ?AbstractRequestQueryParams
+    {
+        return $this->queryParams;
+    }
+
+    public function getBody(): ?AbstractRequestBody
+    {
+        return $this->body;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getURLVars(): array
+    {
+        return $this->urlVars;
+    }
+
+    /**
+     * @param array<string, mixed> $urlVars
+     */
+    public function setURLVars(array $urlVars): void
+    {
+        $this->urlVars = array_merge($this->urlVars, $urlVars);
+    }
+
+    public function composeURL(): string
     {
         $tail = '';
 
@@ -45,20 +87,12 @@ abstract class AbstractRequest
 
         return preg_replace_callback(
             '/{\w+}/',
-            fn ($match) => $this->urlParams[trim($match[0], '{}')] ?? $match[0],
+            fn ($match) => $this->urlVars[trim($match[0], '{}')] ?? $match[0],
             $this->getURLPattern()
         ) . $tail;
     }
 
-    public function getKey(): Key
-    {
-        return $this->key;
-    }
-
-    public function getPayload(): Payload
-    {
-        return $this->payload;
-    }
+    abstract public function getHTTPMethod(): string;
 
     abstract protected function getURLPattern(): string;
 }

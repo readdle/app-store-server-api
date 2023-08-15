@@ -3,21 +3,13 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use JsonSerializable;
 use Readdle\AppStoreServerAPI\Util\Helper;
+
 use function get_object_vars;
 
-final class TransactionInfo
+final class TransactionInfo implements JsonSerializable
 {
-    /**
-     * Indicates that the notification applies to testing in the sandbox environment.
-     */
-    public const ENVIRONMENT__SANDBOX = 'Sandbox';
-
-    /**
-     * Indicates that the notification applies to the production environment.
-     */
-    public const ENVIRONMENT__PRODUCTION = 'Production';
-
     /**
      * The transaction belongs to a family member who benefits from the service.
      */
@@ -44,12 +36,14 @@ final class TransactionInfo
     public const OFFER_TYPE__SUBSCRIPTION = 3;
 
     /**
-     * Apple Support refunded the transaction on behalf of the customer for other reasons; for example, an accidental purchase.
+     * Apple Support refunded the transaction on behalf of the customer for other reasons; for example, an accidental
+     * purchase.
      */
     public const REVOCATION_REASON__OTHER = 0;
 
     /**
-     * Apple Support refunded the transaction on behalf of the customer due to an actual or perceived issue within your app.
+     * Apple Support refunded the transaction on behalf of the customer due to an actual or perceived issue within your
+     * app.
      */
     public const REVOCATION_REASON__ISSUE_WITHIN_APP = 1;
 
@@ -95,14 +89,15 @@ final class TransactionInfo
     private ?int $expiresDate = null;
 
     /**
-     * A string that describes whether the transaction was purchased by the user, or is available to them through Family Sharing.
+     * A string that describes whether the transaction was purchased by the user, or is available to them through Family
+     * Sharing.
      */
     private string $inAppOwnershipType;
 
     /**
      * A Boolean value that indicates whether the user upgraded to another subscription.
      */
-    private ?bool $isUpgraded = null;
+    private bool $isUpgraded = false;
 
     /**
      * The identifier that contains the promo code or the promotional offer identifier.
@@ -167,7 +162,7 @@ final class TransactionInfo
     private string $transactionId;
 
     /**
-     *
+     * The type of the in-app purchase.
      */
     private string $type;
 
@@ -181,10 +176,13 @@ final class TransactionInfo
         // just a stub which prevents this class from direct instantiation
     }
 
-    public static function createFromPayload(array $payload): self
+    /**
+     * @param array<string, mixed> $rawTransactionInfo
+     */
+    public static function createFromRawTransactionInfo(array $rawTransactionInfo): self
     {
         $transactionInfo = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($payload, [
+        $typeCaster = Helper::arrayTypeCastGenerator($rawTransactionInfo, [
             'int' => [
                 'expiresDate', 'offerType', 'originalPurchaseDate', 'purchaseDate',
                 'quantity', 'revocationDate', 'revocationReason', 'signedDate',
@@ -206,30 +204,45 @@ final class TransactionInfo
         return $transactionInfo;
     }
 
+    /**
+     * Returns a UUID that associates the transaction with a user on your own service.
+     * If the app doesn't provide an appAccountToken, this string is empty.
+     */
     public function getAppAccountToken(): ?string
     {
         return $this->appAccountToken;
     }
 
+    /**
+     * Returns the bundle identifier of the app.
+     */
     public function getBundleId(): string
     {
         return $this->bundleId;
     }
 
     /**
-     * @return self::ENVIRONMENT__*
+     * Returns the server environment, either sandbox or production.
+     *
+     * @return Environment::PRODUCTION|Environment::SANDBOX
      */
     public function getEnvironment(): string
     {
         return $this->environment;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, the subscription expires or renews (if any).
+     */
     public function getExpiresDate(): ?int
     {
         return $this->expiresDate;
     }
 
     /**
+     * Returns a string that describes whether the transaction was purchased by the user, or is available to them
+     * through Family Sharing.
+     *
      * @return self::IN_APP_OWNERSHIP_TYPE__*
      */
     public function getInAppOwnershipType(): string
@@ -237,78 +250,123 @@ final class TransactionInfo
         return $this->inAppOwnershipType;
     }
 
-    public function getIsUpgraded(): ?bool
+    /**
+     * Returns a Boolean value that indicates whether the user upgraded to another subscription.
+     */
+    public function getIsUpgraded(): bool
     {
         return $this->isUpgraded;
     }
 
+    /**
+     * Returns the identifier that contains the promo code or the promotional offer identifier.
+     *
+     * NOTE: This field applies only when the offerType is either promotional offer or subscription offer code.
+     */
     public function getOfferIdentifier(): ?string
     {
         return $this->offerIdentifier;
     }
 
     /**
+     * Returns a value that represents the promotional offer type (if any).
+     *
      * @return null|self::OFFER_TYPE__*
      */
     public function getOfferType(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->offerType;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, that represents the purchase date of the original transaction identifier.
+     */
     public function getOriginalPurchaseDate(): int
     {
         return $this->originalPurchaseDate;
     }
 
+    /**
+     * Returns the transaction identifier of the original purchase.
+     */
     public function getOriginalTransactionId(): string
     {
         return $this->originalTransactionId;
     }
 
+    /**
+     * Returns the product identifier of the in-app purchase.
+     */
     public function getProductId(): string
     {
         return $this->productId;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, that the App Store charged the user's account for a purchase,
+     * restored product, subscription, or subscription renewal after a lapse.
+     */
     public function getPurchaseDate(): int
     {
         return $this->purchaseDate;
     }
 
+    /**
+     * Returns the number of consumable products the user purchased.
+     */
     public function getQuantity(): int
     {
         return $this->quantity;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, that the App Store refunded the transaction or revoked it from
+     * Family Sharing (if any).
+     */
     public function getRevocationDate(): ?int
     {
         return $this->revocationDate;
     }
 
     /**
+     * The reason that the App Store refunded the transaction or revoked it from Family Sharing (if any).
+     *
      * @return null|self::REVOCATION_REASON__*
      */
     public function getRevocationReason(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->revocationReason;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, that the App Store signed the JSON Web Signature (JWS) data.
+     */
     public function getSignedDate(): int
     {
         return $this->signedDate;
     }
 
+    /**
+     * Returns the identifier of the subscription group the subscription belongs to (if any).
+     */
     public function getSubscriptionGroupIdentifier(): ?string
     {
         return $this->subscriptionGroupIdentifier;
     }
 
+    /**
+     * Returns the unique identifier of the transaction.
+     */
     public function getTransactionId(): string
     {
         return $this->transactionId;
     }
 
     /**
+     * Returns the type of the in-app purchase.
+     *
      * @return self::TYPE__*
      */
     public function getType(): string
@@ -316,12 +374,19 @@ final class TransactionInfo
         return $this->type;
     }
 
+    /**
+     * Returns the unique identifier of subscription purchase events across devices, including subscription
+     * renewals (if any).
+     */
     public function getWebOrderLineItemId(): ?string
     {
         return $this->webOrderLineItemId;
     }
 
-    public function toArray(): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

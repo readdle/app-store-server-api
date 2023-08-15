@@ -4,15 +4,22 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI\Response;
 
 use Generator;
+use Readdle\AppStoreServerAPI\Environment;
+use Readdle\AppStoreServerAPI\Exception\HTTPRequestAborted;
+use Readdle\AppStoreServerAPI\Exception\HTTPRequestFailed;
 use Readdle\AppStoreServerAPI\Exception\MalformedJWTException;
-use Readdle\AppStoreServerAPI\JWT;
+use Readdle\AppStoreServerAPI\Exception\MalformedResponseException;
+use Readdle\AppStoreServerAPI\Exception\UnimplementedContentTypeException;
+use Readdle\AppStoreServerAPI\Util\JWT;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\TransactionInfo;
 
 final class HistoryResponse extends PageableResponse
 {
     /**
-     * The app’s identifier in the App Store.
+     * The app's identifier in the App Store.
+     * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
+     * environment.
      */
     protected ?int $appAppleId = null;
 
@@ -22,46 +29,63 @@ final class HistoryResponse extends PageableResponse
     protected string $bundleId;
 
     /**
-     * The server environment in which you’re making the request, whether sandbox or production.
+     * The server environment in which you're making the request, whether sandbox or production.
      */
     protected string $environment;
-
-    /**
-     * A Boolean value that indicates whether the App Store has more transactions than it returns in this response. If the value is true, use the revision token to request the next set of transactions.
-     */
-    protected bool $hasMore;
-
-    /**
-     * A token you use in a query to request the next set of transactions from the Get Transaction History endpoint.
-     */
-    protected string $revision;
-
-    /**
-     * An array of in-app purchase transactions of the customer, signed by Apple, in JSON Web Signature format.
-     */
-    protected array $signedTransactions = [];
-
-    /**
-     * An array of in-app purchase transactions of the customer, decoded.
-     */
-    protected array $transactions = [];
 
     /**
      * @throws MalformedJWTException
      */
     protected function __construct(array $properties, AbstractRequest $originalRequest)
     {
-        parent::__construct($properties, $originalRequest);
-
-        foreach ($this->signedTransactions as $signedTransaction) {
-            $this->transactions[] = TransactionInfo::createFromPayload(JWT::parse($signedTransaction));
+        foreach ($properties['signedTransactions'] ?? [] as $signedTransactionInfo) {
+            $this->items[] = TransactionInfo::createFromRawTransactionInfo(JWT::parse($signedTransactionInfo));
         }
+
+        unset($properties['signedTransactions']);
+        parent::__construct($properties, $originalRequest);
     }
 
-    public function transactionsIterator(): Generator
+    /**
+     * Returns the app's identifier in the App Store.
+     * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
+     * environment.
+     */
+    public function getAppAppleId(): ?int
     {
-        foreach ($this->transactions as $transaction) {
-            yield $transaction;
-        }
+        return $this->appAppleId;
+    }
+
+    /**
+     * Returns the bundle identifier of the app.
+     */
+    public function getBundleId(): string
+    {
+        return $this->bundleId;
+    }
+
+    /**
+     * Returns the server environment in which you're making the request, whether sandbox or production.
+     *
+     * @return Environment::PRODUCTION|Environment::SANDBOX
+     */
+    public function getEnvironment(): string
+    {
+        return $this->environment;
+    }
+
+    /**
+     * Returns a Generator which iterates over an array of in-app purchase transactions for the customer.
+     *
+     * @return Generator<TransactionInfo>
+     *
+     * @throws HTTPRequestAborted
+     * @throws HTTPRequestFailed
+     * @throws MalformedResponseException
+     * @throws UnimplementedContentTypeException
+     */
+    public function getTransactions(): Generator
+    {
+        return $this->getItems();
     }
 }

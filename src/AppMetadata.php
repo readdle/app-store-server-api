@@ -3,24 +3,17 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use JsonSerializable;
 use Readdle\AppStoreServerAPI\Util\Helper;
+
 use function array_key_exists;
 
-final class AppMetadata
+final class AppMetadata implements JsonSerializable
 {
     /**
-     * Indicates that the notification applies to testing in the sandbox environment.
-     */
-    public const ENVIRONMENT__SANDBOX = 'Sandbox';
-
-    /**
-     * Indicates that the notification applies to the production environment.
-     */
-    public const ENVIRONMENT__PRODUCTION = 'Production';
-
-    /**
      * The unique identifier of the app that the notification applies to.
-     * This property is available for apps that are downloaded from the App Store; it isn’t present in the sandbox environment.
+     * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
+     * environment.
      */
     private ?string $appAppleId = null;
 
@@ -32,7 +25,7 @@ final class AppMetadata
     /**
      * The version of the build that identifies an iteration of the bundle.
      */
-    private ?string $bundleVersion = null;
+    private string $bundleVersion;
 
     /**
      * The server environment that the notification applies to, either sandbox or production.
@@ -54,10 +47,13 @@ final class AppMetadata
         // just a stub which prevents this class from direct instantiation
     }
 
-    public static function createFromPayload(array $payload): self
+    /**
+     * @param array<string, mixed> $rawData
+     */
+    public static function createFromRawData(array $rawData): self
     {
         $appMetadata = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($payload, [
+        $typeCaster = Helper::arrayTypeCastGenerator($rawData, [
             'string' => ['appAppleId', 'bundleId', 'bundleVersion', 'environment'],
         ]);
 
@@ -65,47 +61,74 @@ final class AppMetadata
             $appMetadata->$prop = $value;
         }
 
-        if (array_key_exists('renewalInfo', $payload) && $payload['renewalInfo'] instanceof RenewalInfo) {
-            $appMetadata->renewalInfo = $payload['renewalInfo'];
+        if (array_key_exists('renewalInfo', $rawData) && $rawData['renewalInfo'] instanceof RenewalInfo) {
+            $appMetadata->renewalInfo = $rawData['renewalInfo'];
         }
 
-        if (array_key_exists('transactionInfo', $payload) && $payload['transactionInfo'] instanceof TransactionInfo) {
-            $appMetadata->transactionInfo = $payload['transactionInfo'];
+        if (array_key_exists('transactionInfo', $rawData) && $rawData['transactionInfo'] instanceof TransactionInfo) {
+            $appMetadata->transactionInfo = $rawData['transactionInfo'];
         }
 
         return $appMetadata;
     }
 
+    /**
+     * Returns the unique identifier of the app that the notification applies to.
+     * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
+     * environment.
+     */
     public function getAppAppleId(): ?string
     {
         return $this->appAppleId;
     }
 
+    /**
+     * Returns the bundle identifier of the app.
+     */
     public function getBundleId(): string
     {
         return $this->bundleId;
     }
 
-    public function getBundleVersion(): ?string
+    /**
+     * Returns the version of the build that identifies an iteration of the bundle.
+     */
+    public function getBundleVersion(): string
     {
         return $this->bundleVersion;
     }
 
     /**
-     * @return self::ENVIRONMENT__*
+     * Returns the server environment that the notification applies to, either sandbox or production.
+     *
+     * @return Environment::PRODUCTION|Environment::SANDBOX
      */
     public function getEnvironment(): string
     {
         return $this->environment;
     }
 
+    /**
+     * Returns subscription renewal information (if any).
+     */
     public function getRenewalInfo(): ?RenewalInfo
     {
         return $this->renewalInfo;
     }
 
+    /**
+     * Returns transaction information (if any).
+     */
     public function getTransactionInfo(): ?TransactionInfo
     {
         return $this->transactionInfo;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return get_object_vars($this);
     }
 }

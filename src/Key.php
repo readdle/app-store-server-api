@@ -5,22 +5,22 @@ namespace Readdle\AppStoreServerAPI;
 
 final class Key
 {
-    private string $key;
     private string $keyId;
+    private string $key;
 
-    public function __construct(string $key, string $keyId)
+    public function __construct(string $keyId, string $key)
     {
-        $this->key = $key;
         $this->keyId = $keyId;
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
+        $this->key = $key;
     }
 
     public function getKeyId(): string
     {
         return $this->keyId;
+    }
+
+    public function getKey(): string
+    {
+        return $this->key;
     }
 }

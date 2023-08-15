@@ -10,16 +10,17 @@ use function base64_encode;
 use function chunk_split;
 use function str_repeat;
 use function str_replace;
-use function str_starts_with;
 use function strlen;
+use function strpos;
 use function strtr;
 use function trim;
 
 final class Helper
 {
-    private const PEM_PREFIX = "-----BEGIN CERTIFICATE-----\n";
-    private const PEM_POSTFIX = "\n-----END CERTIFICATE-----";
-
+    /**
+     * @param array<string, mixed> $input
+     * @param array<string, array<string>> $typeCastMap
+     */
     public static function arrayTypeCastGenerator(array $input, array $typeCastMap): Generator
     {
         foreach ($typeCastMap as $type => $keys) {
@@ -28,14 +29,26 @@ final class Helper
                     continue;
                 }
 
-                yield $key => match ($type) {
-                    'int' => (int) $input[$key],
-                    'bool' => (bool) $input[$key],
-                    'float' => (float) $input[$key],
-                    'string' => (string) $input[$key],
+                switch ($type) {
+                    case 'int':
+                        yield $key => (int) $input[$key];
+                        break;
 
-                    default => null,
-                };
+                    case 'bool':
+                        yield $key => (bool) $input[$key];
+                        break;
+
+                    case 'float':
+                        yield $key => (float) $input[$key];
+                        break;
+
+                    case 'string':
+                        yield $key => (string) $input[$key];
+                        break;
+
+                    default:
+                        yield $key => null;
+                }
             }
         }
     }
@@ -56,17 +69,55 @@ final class Helper
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
-    public static function checkAndFormatPEM(string $certificate): string
+    public static function formatPEM(string $certificate): string
     {
-        if (str_starts_with($certificate, self::PEM_PREFIX)) {
-            return $certificate;
-        }
-
-        return self::PEM_PREFIX . $certificate . self::PEM_POSTFIX;
+        return join("\n", [
+            "-----BEGIN CERTIFICATE-----",
+            $certificate,
+            "-----END CERTIFICATE-----"
+        ]);
     }
 
-    public static function DER2PEM(string $der): string
+    public static function toPEM(string $binary): string
     {
-        return trim(chunk_split(base64_encode($der), 64));
+        return trim(chunk_split(base64_encode($binary), 64));
+    }
+
+    /**
+     * @return array<int>
+     */
+    public static function bigIntToIntArray(string $bigInt): array
+    {
+        if ($bigInt === '0') {
+            return [0];
+        }
+
+        $intArray = [];
+
+        while ($bigInt != '0') {
+            $intArray[] = (int) bcmod($bigInt, '16');
+            $bigInt = bcdiv($bigInt, '16');
+        }
+
+        return array_reverse($intArray);
+    }
+
+    public static function bigIntToHex(string $bigInt): string
+    {
+        $intArray = self::bigIntToIntArray($bigInt);
+
+        if (count($intArray) % 2) {
+            array_unshift($intArray, 0);
+        }
+
+        return join(array_map(fn (int $int) => dechex($int), $intArray));
+    }
+
+    /**
+     * @return array<int>
+     */
+    public static function hexToIntArray(string $hex): array
+    {
+        return array_map(fn (string $hexOctet) => hexdec($hexOctet), str_split($hex, 2));
     }
 }

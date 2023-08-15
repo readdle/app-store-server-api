@@ -1,18 +1,6 @@
-# About this project
+# About
 
-This is a library which aim is to build communication with `App Store` using `App Store Server API` and `App Store Server Notifications V2`.
-
-At the moment this library covers:
-- Sending request for test notification
-- Receiving notifications
-- Sending request for transactions history by originalTransactionId
-
-# Taking a part in this project
-
-I don't know at the moment how it will go, and I'm not sure this library will be under active (or any, tbh) development.
-
-At the same time, it is **highly** appreciated to take part in this project for anyone interested, maybe one day we'll
-cover all the functionality together, who knows :)
+This is a zero-dependencies PHP library which allows to manage customer's transactions using `App Store Server API` and handle server-to-server notifications using `App Store Server Notifications V2`.
 
 # Installation
 
@@ -22,10 +10,160 @@ Nothing special here, just use composer to install the package:
 
 # Usage
 
-Take a look at `sample.php` in the root directory. It contains stubs instead of real keys/IDs/etc., but if you replace
-stubs with your actual credentials you will be able to communicate with App Store, request test notification, receive it
-(of course, you'll need to set it up in your App Store Connect) and request transactions history for the app you have.
+### App Store Server API
 
-# Overall structure
+API initialization:
 
-I will try to cover more topics here later. Feel free to ask questions, submit pull requests and so on.
+```
+try {
+    $api = new AppStoreServerAPI(
+        'Production',
+        '1a2b3c4d-1234-4321-1111-1a2b3c4d5e6f',
+        'com.readdle.MyBundle',
+        'ABC1234DEF',
+        "-----BEGIN PRIVATE KEY-----\n<base64-encoded private key goes here>\n-----END PRIVATE KEY-----"
+    );
+} catch (WrongEnvironmentException $e) {
+    exit($e->getMessage());
+}
+```
+
+Performing API call:
+
+```
+try {
+    $transactionHistory = $api->getTransactionHistory($transactionId, ['sort' => GetTransactionHistoryQueryParams::SORT__DESCENDING]);
+    $transactions = $transactionHistory->getTransactions();
+} catch (AppStoreServerAPIException $e) {
+    exit($e->getMessage());
+}
+```
+
+### App Store Server Notifications
+
+```
+try {
+    $responseBodyV2 = ResponseBodyV2::createFromRawNotification(
+        '{"signedPayload":"..."}',
+        Helper::toPEM(file_get_contents('https://www.apple.com/certificateauthority/AppleRootCA-G3.cer'))
+    );
+} catch (AppStoreServerNotificationException $e) {
+    exit('Server notification could not be processed: ' . $e->getMessage());
+}
+```
+
+# Examples
+
+In `examples/` directory you can find examples for all implemented endpoints. Initialization of the API client is separated into `client.php` and used in all examples.
+
+In order to run examples you have to create `credentials.json` and/or `notifications.json` inside `examples/` directory.
+
+`credentials.json` structure should be as follows:
+
+```
+{
+  "env": "Production",
+  "issuerId": "1a2b3c4d-1234-4321-1111-1a2b3c4d5e6f",
+  "bundleId": "com.readdle.MyBundle",
+  "keyId": "ABC1234DEF",
+  "key": "-----BEGIN PRIVATE KEY-----\n<base64-encoded private key goes here>\n-----END PRIVATE KEY-----",
+  "orderId": "ABC1234DEF",
+  "transactionId": "123456789012345"
+}
+```
+
+In most examples `transactionId` is used. Please, consider that `transactionId` is related to `environment`, so if you put `transactionId` from the sandbox the `environment` property should be `Sandbox` as well, otherwise you'll get "Transaction not found" error. 
+
+For `Order ID lookup` you have to specify `orderId`. This endpoint (and, consequently, the example) is not available in the sandbox environment.
+
+`notification.json` structure is the same as you receive it in your server-to-server notification endpoint:
+
+```
+{"signedPayload":"<JWS token goes here>"}
+```
+
+# What is covered
+
+### In-app purchase history
+
+#### [Get Transaction History](https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history)
+
+`AppStoreServerAPI::getTransactionHistory(string $transactionId, array $queryParams)`
+
+Get a customer’s in-app purchase transaction history for your app.
+
+### Transaction Info
+
+#### [Get Transaction Info](https://developer.apple.com/documentation/appstoreserverapi/get_transaction_info)
+
+`AppStoreServerAPI::getTransactionInfo(string $transactionId)`
+
+Get information about a single transaction for your app.
+
+### Subscription status
+
+#### [Get All Subscription Statuses](https://developer.apple.com/documentation/appstoreserverapi/get_all_subscription_statuses)
+
+`AppStoreServerAPI::getAllSubscriptionStatuses(string $transactionId, array $queryParams = [])`
+
+Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
+
+### Order ID lookup
+
+#### [Look Up Order ID](https://developer.apple.com/documentation/appstoreserverapi/look_up_order_id)
+
+`AppStoreServerAPI::lookUpOrderId(string $orderId)`
+
+Get a customer’s in-app purchases from a receipt using the order ID.
+
+### Refund lookup
+
+#### [Get Refund History](https://developer.apple.com/documentation/appstoreserverapi/get_refund_history)
+
+`AppStoreServerAPI::getRefundHistory(string $transactionId)`
+
+Get a list of all of a customer’s refunded in-app purchases for your app.
+
+### App Store Server Notifications history
+
+#### [Get Notification History](https://developer.apple.com/documentation/appstoreserverapi/get_notification_history)
+
+`AppStoreServerAPI::getNotificationHistory(array $requestBody)`
+
+Get a list of notifications that the App Store server attempted to send to your server.
+
+### App Store Server Notifications testing
+
+#### [Request a Test Notification](https://developer.apple.com/documentation/appstoreserverapi/request_a_test_notification)
+
+`AppStoreServerAPI::requestTestNotification()`
+
+Ask App Store Server Notifications to send a test notification to your server.
+
+#### [Get Test Notification Status](https://developer.apple.com/documentation/appstoreserverapi/get_test_notification_status)
+
+`AppStoreServerAPI::getTestNotificationStatus(string $testNotificationToken)`
+
+Check the status of the test App Store server notification sent to your server.
+
+# What is not covered... yet
+
+### Consumption information
+
+#### [Send Consumption Information](https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information)
+
+Send consumption information about a consumable in-app purchase to the App Store after your server receives a consumption request notification.
+
+### Subscription-renewal-date extension
+
+#### [Extend a Subscription Renewal Date](https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date)
+
+Extends the renewal date of a customer’s active subscription using the original transaction identifier.
+
+#### [Extend Subscription Renewal Dates for All Active Subscribers](https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers)
+
+Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
+
+#### [Get Status of Subscription Renewal Date Extensions](https://developer.apple.com/documentation/appstoreserverapi/get_status_of_subscription_renewal_date_extensions)
+
+Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.

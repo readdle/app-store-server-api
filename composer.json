@@ -1,17 +1,42 @@
 {
 	"name": "readdle/app-store-server-api",
-	"description": "This library implements App Store Server REST API and App Store Server Notifications V2 which allows to manage customer's transactions and interact with server-to-server notifications respectively",
+	"description": "PHP library which allows to manage customer's transactions using App Store Server API and handle server-to-server notifications using App Store Server Notifications V2",
 	"type": "library",
 	"license": "MIT",
-	"version": "2.1.0",
-	"php": ">=8.0",
+	"authors": [
+		{
+			"name": "Pavlo Kotets",
+			"email": "pkotets@readdle.com",
+			"homepage": "https://github.com/pkotets"
+		}
+	],
+	"keywords": [
+		"app store",
+		"server api",
+		"server notifications",
+		"itunes",
+		"apple",
+		"in app",
+		"purchase",
+		"parser",
+		"server-to-server",
+		"php"
+	],
+	"homepage": "https://github.com/readdle/app-store-server-api",
+	"version": "3.0.0",
+	"php": ">=7.4",
 	"autoload": {
 		"psr-4": {
 			"Readdle\\AppStoreServerAPI\\": "src/"
 		}
 	},
 	"require": {
+		"ext-bcmath": "*",
 		"ext-json": "*",
 		"ext-openssl": "*"
+	},
+	"require-dev": {
+		"friendsofphp/php-cs-fixer": "^3.23",
+		"phpstan/phpstan": "^1.10"
 	}
 }

@@ -1,2 +1,5 @@
 .idea/
+.php-cs-fixer.cache
+examples/credentials.json
+examples/notification.json
 vendor/

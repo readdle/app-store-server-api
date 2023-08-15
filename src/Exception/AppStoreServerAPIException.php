@@ -5,7 +5,6 @@ namespace Readdle\AppStoreServerAPI\Exception;
 
 use Exception;
 
-class AppStoreServerAPIException extends Exception
+abstract class AppStoreServerAPIException extends Exception
 {
-
 }

@@ -3,14 +3,17 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use JsonSerializable;
 use Readdle\AppStoreServerAPI\Util\Helper;
+
 use function get_object_vars;
 
-final class RenewalInfo
+final class RenewalInfo implements JsonSerializable
 {
     /**
      * Automatic renewal is off.
-     * The customer has turned off automatic renewal for the subscription, and it won’t renew at the end of the current subscription period.
+     * The customer has turned off automatic renewal for the subscription, and it won't renew at the end of the current
+     * subscription period.
      */
     const AUTO_RENEW_STATUS__OFF = 0;
 
@@ -21,22 +24,12 @@ final class RenewalInfo
     const AUTO_RENEW_STATUS__ON = 1;
 
     /**
-     * Indicates that the notification applies to testing in the sandbox environment.
-     */
-    public const ENVIRONMENT__SANDBOX = 'Sandbox';
-
-    /**
-     * Indicates that the notification applies to the production environment.
-     */
-    public const ENVIRONMENT__PRODUCTION = 'Production';
-
-    /**
      * The customer canceled their subscription.
      */
     public const EXPIRATION_INTENT__CANCEL = 1;
 
     /**
-     * Billing error; for example, the customer’s payment information is no longer valid.
+     * Billing error; for example, the customer's payment information is no longer valid.
      */
     public const EXPIRATION_INTENT__BILLING_ERROR = 2;
 
@@ -47,7 +40,7 @@ final class RenewalInfo
     public const EXPIRATION_INTENT__PRICE_INCREASE = 3;
 
     /**
-     * The product wasn’t available for purchase at the time of renewal.
+     * The product wasn't available for purchase at the time of renewal.
      */
     public const EXPIRATION_INTENT__UNAVAILABLE_PRODUCT = 4;
 
@@ -67,13 +60,15 @@ final class RenewalInfo
     public const OFFER_TYPE__SUBSCRIPTION_OFFER_CODE = 3;
 
     /**
-     * The customer hasn't yet responded to an auto-renewable subscription price increase that requires customer consent.
+     * The customer hasn't yet responded to an auto-renewable subscription price increase that requires customer
+     * consent.
      */
     public const PRICE_INCREASE_STATUS__NOT_RESPONDED = 0;
 
     /**
      * The customer consented to an auto-renewable subscription price increase that requires customer consent,
-     * or the App Store has notified the customer of an auto-renewable subscription price increase that doesn't require consent.
+     * or the App Store has notified the customer of an auto-renewable subscription price increase that doesn't require
+     * consent.
      */
     public const PRICE_INCREASE_STATUS__CONSENTED = 1;
 
@@ -103,9 +98,10 @@ final class RenewalInfo
     private ?int $gracePeriodExpiresDate = null;
 
     /**
-     * The Boolean value that indicates whether the App Store is attempting to automatically renew an expired subscription.
+     * The Boolean value that indicates whether the App Store is attempting to automatically renew an expired
+     * subscription.
      */
-    private ?bool $isInBillingRetryPeriod = null;
+    private bool $isInBillingRetryPeriod = false;
 
     /**
      * The offer code or the promotional offer identifier.
@@ -148,10 +144,13 @@ final class RenewalInfo
         // just a stub which prevents this class from direct instantiation
     }
 
-    public static function createFromPayload(array $payload): self
+    /**
+     * @param array<string, mixed> $rawRenewalInfo
+     */
+    public static function createFromRawRenewalInfo(array $rawRenewalInfo): self
     {
         $renewalInfo = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($payload, [
+        $typeCaster = Helper::arrayTypeCastGenerator($rawRenewalInfo, [
             'int' => [
                 'autoRenewStatus', 'expirationIntent', 'gracePeriodExpiresDate', 'offerType',
                 'priceIncreaseStatus', 'recentSubscriptionStartDate', 'signedDate',
@@ -172,21 +171,29 @@ final class RenewalInfo
         return $renewalInfo;
     }
 
+    /**
+     * Returns the product identifier of the product that renews at the next billing period.
+     */
     public function getAutoRenewProductId(): string
     {
         return $this->autoRenewProductId;
     }
 
     /**
+     * Returns the renewal status for an auto-renewable subscription.
+     *
      * @return self::AUTO_RENEW_STATUS__*
      */
     public function getAutoRenewStatus(): int
     {
+        /** @phpstan-ignore-next-line */
         return $this->autoRenewStatus;
     }
 
     /**
-     * @return self::ENVIRONMENT__*
+     * Returns the server environment, either sandbox or production.
+     *
+     * @return Environment::PRODUCTION|Environment::SANDBOX
      */
     public function getEnvironment(): string
     {
@@ -194,59 +201,100 @@ final class RenewalInfo
     }
 
     /**
+     * Returns the reason a subscription expired (if any).
+     *
      * @return null|self::EXPIRATION_INTENT__*
      */
     public function getExpirationIntent(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->expirationIntent;
     }
 
+    /**
+     * Returns the time when the billing grace period for subscription renewals expires (if any).
+     */
     public function getGracePeriodExpiresDate(): ?int
     {
         return $this->gracePeriodExpiresDate;
     }
 
-    public function getIsInBillingRetryPeriod(): ?bool
+    /**
+     * Returns the Boolean value that indicates whether the App Store is attempting to automatically renew an expired
+     * subscription.
+     */
+    public function getIsInBillingRetryPeriod(): bool
     {
         return $this->isInBillingRetryPeriod;
     }
 
+    /**
+     * Returns the offer code or the promotional offer identifier (if any).
+     */
     public function getOfferIdentifier(): ?string
     {
         return $this->offerIdentifier;
     }
 
+    /**
+     * Returns the type of subscription offer (if any).
+     *
+     * @return self::OFFER_TYPE__*
+     */
     public function getOfferType(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->offerType;
     }
 
+    /**
+     * Returns the original transaction identifier of a purchase.
+     */
     public function getOriginalTransactionId(): string
     {
         return $this->originalTransactionId;
     }
 
+    /**
+     * Returns the status that indicates whether the auto-renewable subscription is subject to a price increase (if any)
+     *
+     * @return self::PRICE_INCREASE_STATUS__*
+     */
     public function getPriceIncreaseStatus(): ?int
     {
+        /** @phpstan-ignore-next-line */
         return $this->priceIncreaseStatus;
     }
 
+    /**
+     * Returns the product identifier of the in-app purchase.
+     */
     public function getProductId(): string
     {
         return $this->productId;
     }
 
+    /**
+     * Returns the earliest start date of an auto-renewable subscription in a series of subscription purchases
+     * that ignores all lapses of paid service that are 60 days or less.
+     */
     public function getRecentSubscriptionStartDate(): int
     {
         return $this->recentSubscriptionStartDate;
     }
 
+    /**
+     * Returns the UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
+     */
     public function getSignedDate(): int
     {
         return $this->signedDate;
     }
 
-    public function toArray(): array
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
     {
         return get_object_vars($this);
     }

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Readdle\AppStoreServerAPI;
+namespace Readdle\AppStoreServerAPI\Util;
 
 use Exception;
-use Readdle\AppStoreServerAPI\Exception\InvalidArgumentException;
 use Readdle\AppStoreServerAPI\Exception\JWTCreationException;
 use Readdle\AppStoreServerAPI\Exception\MalformedJWTException;
-use Readdle\AppStoreServerAPI\Util\ECSignature;
-use Readdle\AppStoreServerAPI\Util\Helper;
+use Readdle\AppStoreServerAPI\Key;
+use Readdle\AppStoreServerAPI\Payload;
+
 use function array_key_exists;
 use function array_map;
 use function count;
@@ -25,21 +25,25 @@ use function set_error_handler;
 use function strrpos;
 use function substr;
 use function trim;
+
 use const OPENSSL_ALGO_SHA256;
+use const STR_PAD_LEFT;
 
 final class JWT
 {
-    private const ALGORITHM = [
+    const TYPE = 'JWT';
+
+    const ALGORITHM = [
         'name' => 'ES256',
         'opensslAlgorithm' => OPENSSL_ALGO_SHA256,
         'hashAlgorithm' => 'sha256',
         'signaturePartLength' => 64,
     ];
 
-    private const HEADER_TYP = 'typ';
-    private const HEADER_ALG = 'alg';
-    private const HEADER_KID = 'kid';
-    private const HEADER_X5C = 'x5c';
+    const HEADER_TYP = 'typ';
+    const HEADER_ALG = 'alg';
+    const HEADER_KID = 'kid';
+    const HEADER_X5C = 'x5c';
 
     const REQUIRED_JWS_HEADERS = [
         self::HEADER_ALG,
@@ -54,7 +58,7 @@ final class JWT
     public static function createFrom(Key $key, Payload $payload): string
     {
         $header = [
-            self::HEADER_TYP => 'JWT',
+            self::HEADER_TYP => self::TYPE,
             self::HEADER_ALG => self::ALGORITHM['name'],
             self::HEADER_KID => $key->getKeyId(),
         ];
@@ -72,29 +76,49 @@ final class JWT
         };
 
         $previousErrorHandler = set_error_handler($errorHandler);
-        $signature = ''; // will be filled by the next call
-        $signed = openssl_sign(join('.', $segments), $signature, $key->getKey(), self::ALGORITHM['opensslAlgorithm']);
+        $signatureAsASN1 = '';
+        $isSigned = openssl_sign(
+            join('.', $segments),
+            $signatureAsASN1,
+            $key->getKey(),
+            self::ALGORITHM['opensslAlgorithm']
+        );
         set_error_handler($previousErrorHandler);
 
-        if (!$signed) {
-            throw new JWTCreationException('Message could not be signed: ' . $error);
+        if (!$isSigned) {
+            throw new JWTCreationException('Message could not be signed', new Exception($error));
         }
 
         try {
-            $segments[] = Helper::base64Encode(ECSignature::fromAsn1($signature, self::ALGORITHM['signaturePartLength']));
-        } catch (InvalidArgumentException $e) {
-            throw new JWTCreationException('Signature could not be encoded: ' . $e->getMessage());
+            $signatureParts = ASN1SequenceOfInteger::read($signatureAsASN1);
+        } catch (Exception $e) {
+            throw new JWTCreationException('Signature could not be encoded', $e);
         }
+
+        $segments[] = Helper::base64Encode(hex2bin(join(array_map(
+            fn (string $int) => str_pad(
+                Helper::bigIntToHex($int),
+                self::ALGORITHM['signaturePartLength'],
+                '0',
+                STR_PAD_LEFT
+            ),
+            $signatureParts
+        ))));
 
         return join('.', $segments);
     }
 
     /**
-     * WARNING! This method DOESN'T check and DOESN'T validate notification AT ALL!
-     * Use it FOR TESTING PURPOSES ONLY!
+     * WARNING!
+     * THIS METHOD TURNS OFF VALIDATION AT ALL!
+     * USE IT FOR TESTING PURPOSES ONLY!
      *
      * Turns unsafe mode on/off.
-     * Unsafe mode means that notifications will be parsed without any validation.
+     * Returns previous state of unsafe mode.
+     *
+     * NOTE: Unsafe mode means that payloads will be parsed without any validation.
+     *
+     * @noinspection PhpUnused
      */
     public static function unsafeMode(bool $state = true): bool
     {
@@ -104,9 +128,11 @@ final class JWT
     }
 
     /**
-     * Parses notification, checks its headers, certificates chain, signature.
+     * Parses signed payload, checks its headers, certificates chain, signature.
      * Returns decoded payload.
-     * Throws an exception if notification is malformed or verification failed.
+     * Throws an exception if payload is malformed or verification failed.
+     *
+     * @return array<string, mixed>
      *
      * @throws MalformedJWTException
      */
@@ -175,11 +201,13 @@ final class JWT
     }
 
     /**
+     * @param array<int, string> $chain
+     *
      * @throws Exception
      */
     private static function verifyX509Chain(array $chain, ?string $rootCertificate = null): void
     {
-        [$certificate, $intermediate, $root] = array_map([Helper::class, 'checkAndFormatPEM'], $chain);
+        [$certificate, $intermediate, $root] = array_map([Helper::class, 'formatPEM'], $chain);
 
         if (openssl_x509_verify($certificate, $intermediate) !== 1) {
             throw new Exception('Certificate verification failed');
@@ -191,26 +219,33 @@ final class JWT
 
         if (
             !is_null($rootCertificate)
-            && openssl_x509_verify($root, Helper::checkAndFormatPEM($rootCertificate)) !== 1
+            && openssl_x509_verify($root, Helper::formatPEM($rootCertificate)) !== 1
         ) {
             throw new Exception('Root certificate verification failed');
         }
     }
 
     /**
+     * @param array<string, string> $headers
+     *
      * @throws Exception
      */
     private static function verifySignature(array $headers, string $input, string $signature): void
     {
-        try {
-            $der = ECSignature::toAsn1($signature, self::ALGORITHM['signaturePartLength']);
-        } catch (InvalidArgumentException $e) {
-            throw new Exception('Signature conversion error: ' . $e->getMessage());
+        $hexSignature = bin2hex($signature);
+
+        if (strlen($hexSignature) !== self::ALGORITHM['signaturePartLength'] * 2) {
+            throw new Exception('Invalid signature length');
         }
 
-        $pem = Helper::checkAndFormatPEM($headers[self::HEADER_X5C][0]);
+        $signatureAsASN1 = ASN1SequenceOfInteger::create(array_map(
+            fn (string $hex) => Helper::hexToIntArray($hex),
+            str_split($hexSignature, self::ALGORITHM['signaturePartLength'])
+        ));
 
-        if (openssl_verify($input, $der, $pem, self::ALGORITHM['hashAlgorithm']) !== 1) {
+        $publicKey = Helper::formatPEM($headers[self::HEADER_X5C][0]);
+
+        if (openssl_verify($input, $signatureAsASN1, $publicKey, self::ALGORITHM['hashAlgorithm']) !== 1) {
             throw new Exception('Wrong signature');
         }
     }
