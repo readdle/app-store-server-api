@@ -101,7 +101,7 @@ final class RenewalInfo implements JsonSerializable
      * The Boolean value that indicates whether the App Store is attempting to automatically renew an expired
      * subscription.
      */
-    private bool $isInBillingRetryPeriod = false;
+    private ?bool $isInBillingRetryPeriod = null;
 
     /**
      * The offer code or the promotional offer identifier.
@@ -223,7 +223,7 @@ final class RenewalInfo implements JsonSerializable
      * Returns the Boolean value that indicates whether the App Store is attempting to automatically renew an expired
      * subscription.
      */
-    public function getIsInBillingRetryPeriod(): bool
+    public function getIsInBillingRetryPeriod(): ?bool
     {
         return $this->isInBillingRetryPeriod;
     }

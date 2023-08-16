@@ -97,7 +97,7 @@ final class TransactionInfo implements JsonSerializable
     /**
      * A Boolean value that indicates whether the user upgraded to another subscription.
      */
-    private bool $isUpgraded = false;
+    private ?bool $isUpgraded = null;
 
     /**
      * The identifier that contains the promo code or the promotional offer identifier.
@@ -253,7 +253,7 @@ final class TransactionInfo implements JsonSerializable
     /**
      * Returns a Boolean value that indicates whether the user upgraded to another subscription.
      */
-    public function getIsUpgraded(): bool
+    public function getIsUpgraded(): ?bool
     {
         return $this->isUpgraded;
     }

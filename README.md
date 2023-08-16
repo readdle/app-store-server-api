@@ -72,7 +72,7 @@ In order to run examples you have to create `credentials.json` and/or `notificat
 }
 ```
 
-In most examples `transactionId` is used. Please, consider that `transactionId` is related to `environment`, so if you put `transactionId` from the sandbox the `environment` property should be `Sandbox` as well, otherwise you'll get "Transaction not found" error. 
+In most examples `transactionId` is used. Please, consider that `transactionId` is related to `environment`, so if you put `transactionId` from the sandbox the `environment` property should be `Sandbox` as well, otherwise you'll get `{"errorCode":4040010,"errorMessage":"Transaction id not found."}` error. 
 
 For `Order ID lookup` you have to specify `orderId`. This endpoint (and, consequently, the example) is not available in the sandbox environment.
 
