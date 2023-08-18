@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $refundHistory = $api->getRefundHistory($credentials['transactionId']);
     $transactions = $refundHistory->getTransactions();

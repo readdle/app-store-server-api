@@ -29,7 +29,6 @@ use function vsprintf;
 
 use const ARRAY_FILTER_USE_KEY;
 
-
 abstract class AbstractRequestParamsBag
 {
     /**
@@ -40,7 +39,7 @@ abstract class AbstractRequestParamsBag
         $reflection = new ReflectionClass($this);
 
         $protectedProps = array_filter($reflection->getProperties(), fn ($property) => $property->isProtected());
-        $protectedProps = array_combine(array_map(fn($p) => $p->getName(), $protectedProps), $protectedProps);
+        $protectedProps = array_combine(array_map(fn ($p) => $p->getName(), $protectedProps), $protectedProps);
         $propConsts  = array_filter(
             $reflection->getConstants(),
             fn ($const) => strpos($const, '__') !== false,

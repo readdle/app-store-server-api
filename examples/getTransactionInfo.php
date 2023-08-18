@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $transactionInfoResponse = $api->getTransactionInfo($credentials['transactionId']);
 } catch (AppStoreServerAPIException $e) {

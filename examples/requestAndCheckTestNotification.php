@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $testNotification = $api->requestTestNotification();
 } catch (AppStoreServerAPIException $e) {

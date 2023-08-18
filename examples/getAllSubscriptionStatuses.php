@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $allSubscriptionStatuses = $api->getAllSubscriptionStatuses($credentials['transactionId']);
 } catch (AppStoreServerAPIException $e) {

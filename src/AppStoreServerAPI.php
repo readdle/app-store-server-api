@@ -91,7 +91,7 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
 
     public function getAllSubscriptionStatuses(string $transactionId, array $queryParams = []): StatusResponse
     {
-         /**
+        /**
          * @var StatusResponse $response
          */
         $response = $this->performRequest(

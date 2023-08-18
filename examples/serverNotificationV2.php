@@ -7,7 +7,6 @@ use Readdle\AppStoreServerAPI\Exception\AppStoreServerNotificationException;
 use Readdle\AppStoreServerAPI\ResponseBodyV2;
 use Readdle\AppStoreServerAPI\Util\Helper;
 
-
 $filename = 'notification.json';
 $notification = file_get_contents($filename);
 

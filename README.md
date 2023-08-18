@@ -1,6 +1,8 @@
 # About
 
-This is a zero-dependencies PHP library which allows to manage customer's transactions using `App Store Server API` and handle server-to-server notifications using `App Store Server Notifications V2`.
+This is a ***zero-dependencies\* pure PHP*** library which allows to manage customer's transactions using `App Store Server API` and handle server-to-server notifications using `App Store Server Notifications V2`.
+
+<sub>* Zero-dependencies means that this library doesn't rely on any third-party library. Ath the same time this library relies on such an essential PHP extensions as `json` and `openssl`</sub>
 
 # Installation
 
@@ -16,7 +18,7 @@ API initialization:
 
 ```
 try {
-    $api = new AppStoreServerAPI(
+    $api = new \Readdle\AppStoreServerAPI\AppStoreServerAPI(
         'Production',
         '1a2b3c4d-1234-4321-1111-1a2b3c4d5e6f',
         'com.readdle.MyBundle',
@@ -43,7 +45,7 @@ try {
 
 ```
 try {
-    $responseBodyV2 = ResponseBodyV2::createFromRawNotification(
+    $responseBodyV2 = \Readdle\AppStoreServerAPI\ResponseBodyV2::createFromRawNotification(
         '{"signedPayload":"..."}',
         Helper::toPEM(file_get_contents('https://www.apple.com/certificateauthority/AppleRootCA-G3.cer'))
     );

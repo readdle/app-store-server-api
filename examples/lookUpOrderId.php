@@ -9,7 +9,6 @@ if (empty($credentials['orderId'])) {
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $orderLookup = $api->lookUpOrderId($credentials['orderId']);
 } catch (AppStoreServerAPIException $e) {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI\Util;
 
 use Exception;
-use Readdle\AppStoreServerAPI\Math;
 
 final class ASN1SequenceOfInteger
 {
@@ -15,71 +14,79 @@ final class ASN1SequenceOfInteger
     const ASN1_BIG_INT_MAX_FIRST_BYTE = 0x7F;
 
     /**
-     * @return array<string>
-     *
      * @throws Exception
      */
-    public static function read(string $asn1): array
+    public static function toHex(string $asn1): string
     {
-        // the first byte is an identifier, 0x20 means "Constructed", 0x10 means "Sequence"
-        if (ord($asn1[0]) !== (self::ASN1_CONSTRUCTED | self::ASN1_SEQUENCE_IDENTIFIER)) {
+        $position = 0;
+
+        if (ord($asn1[$position++]) !== (self::ASN1_CONSTRUCTED | self::ASN1_SEQUENCE_IDENTIFIER)) {
             throw new Exception('ASN1SequenceOfIntegerReader error: not a sequence');
         }
 
-        // the second byte is a length of the whole sequence, should be equal to the length of the rest of the string
-        if (ord($asn1[1]) !== strlen($asn1) - 2) {
+        if (ord($asn1[$position++]) !== strlen($asn1) - 2) {
             throw new Exception('ASN1SequenceOfIntegerReader error: incorrect sequence length');
         }
 
-        $integers = [];
-        $position = 2;
+        $hexParts = [];
         $asn1Length = strlen($asn1);
 
         do {
-            // the first byte is an identifier, 0x02 means "Integer"
-            if (ord($asn1[$position]) !== self::ASN1_INTEGER) {
+            if (ord($asn1[$position++]) !== self::ASN1_INTEGER) {
                 throw new Exception('ASN1SequenceOfIntegerReader error: entry is not an integer');
             }
 
-            // the second byte is a length of an integer value
-            $intLength = ord($asn1[$position + 1]);
-            $integer = '0';
+            $length = ord($asn1[$position++]);
 
-            for ($i = $position + 2; $i < $position + $intLength + 2; $i++) {
-                $integer = Math::add(Math::mul($integer, '256'), (string) ord($asn1[$i]));
+            if (ord($asn1[$position]) === 0) {
+                $position++;
+                $length--;
             }
 
-            $integers[] = $integer;
-            $position += $intLength + 2;
+            $hexParts[] = join(array_map(
+                fn (string $chr) => str_pad(dechex(ord($chr)), 2, '0', STR_PAD_LEFT),
+                str_split(substr($asn1, $position, $length))
+            ));
+
+            $position += $length;
         } while ($position < $asn1Length);
 
-        return $integers;
+        $maxLength = array_reduce($hexParts, fn (int $carry, string $item) => max($carry, strlen($item)), 0);
+        return join(array_map(fn (string $hex) => str_pad($hex, $maxLength, '0', STR_PAD_LEFT), $hexParts));
     }
 
     /**
-     * @param array<array<int>> $intArrays
+     * @throws Exception
      */
-    public static function create(array $intArrays): string
+    public static function fromHex(string $hexSignature): string
     {
-        array_walk($intArrays, function (array &$intArray) {
-            if ($intArray[0] > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
-                array_unshift($intArray, 0);
+        $length = strlen($hexSignature);
+
+        if ($length % 2) {
+            throw new Exception('Invalid signature length');
+        }
+
+        $hexParts = str_split($hexSignature, $length / 2);
+
+        foreach ($hexParts as &$hexPart) {
+            if (hexdec(substr($hexPart, 0, 2)) >= self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+                $hexPart = '00' . $hexPart;
             }
-        });
+        }
 
         $encodedIntegers = join(array_map(
-            fn (array $intArray) =>
-                chr(self::ASN1_INTEGER)
-                . chr(count($intArray))
-                . join(array_map(fn (int $int) => chr($int), $intArray))
-            ,
-            $intArrays
+            fn (string $hexPart) => join([
+                chr(self::ASN1_INTEGER),
+                chr(strlen($hexPart) / 2),
+                join(array_map(fn (string $hex) => chr(hexdec($hex)), str_split($hexPart, 2))),
+            ]),
+            $hexParts
         ));
 
-        return
-            chr(self::ASN1_CONSTRUCTED | self::ASN1_SEQUENCE_IDENTIFIER)
-            . chr(strlen($encodedIntegers))
-            . $encodedIntegers
-        ;
+        return join([
+            chr(self::ASN1_CONSTRUCTED | self::ASN1_SEQUENCE_IDENTIFIER),
+            chr(strlen($encodedIntegers)),
+            $encodedIntegers,
+        ]);
     }
 }

@@ -27,7 +27,6 @@ use function substr;
 use function trim;
 
 use const OPENSSL_ALGO_SHA256;
-use const STR_PAD_LEFT;
 
 final class JWT
 {
@@ -37,7 +36,6 @@ final class JWT
         'name' => 'ES256',
         'opensslAlgorithm' => OPENSSL_ALGO_SHA256,
         'hashAlgorithm' => 'sha256',
-        'signaturePartLength' => 64,
     ];
 
     const HEADER_TYP = 'typ';
@@ -91,21 +89,12 @@ final class JWT
         }
 
         try {
-            $signatureParts = ASN1SequenceOfInteger::read($signatureAsASN1);
+            $signature = ASN1SequenceOfInteger::toHex($signatureAsASN1);
         } catch (Exception $e) {
             throw new JWTCreationException('Signature could not be encoded', $e);
         }
 
-        $segments[] = Helper::base64Encode(hex2bin(join(array_map(
-            fn (string $int) => str_pad(
-                Helper::bigIntToHex($int),
-                self::ALGORITHM['signaturePartLength'],
-                '0',
-                STR_PAD_LEFT
-            ),
-            $signatureParts
-        ))));
-
+        $segments[] = Helper::base64Encode(hex2bin($signature));
         return join('.', $segments);
     }
 
@@ -233,17 +222,7 @@ final class JWT
      */
     private static function verifySignature(array $headers, string $input, string $signature): void
     {
-        $hexSignature = bin2hex($signature);
-
-        if (strlen($hexSignature) !== self::ALGORITHM['signaturePartLength'] * 2) {
-            throw new Exception('Invalid signature length');
-        }
-
-        $signatureAsASN1 = ASN1SequenceOfInteger::create(array_map(
-            fn (string $hex) => Helper::hexToIntArray($hex),
-            str_split($hexSignature, self::ALGORITHM['signaturePartLength'])
-        ));
-
+        $signatureAsASN1 = ASN1SequenceOfInteger::fromHex(bin2hex($signature));
         $publicKey = Helper::formatPEM($headers[self::HEADER_X5C][0]);
 
         if (openssl_verify($input, $signatureAsASN1, $publicKey, self::ALGORITHM['hashAlgorithm']) !== 1) {

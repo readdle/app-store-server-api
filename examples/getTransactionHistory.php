@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $transactionHistory = $api->getTransactionHistory($credentials['transactionId'], ['sort' => 'ASCENDING']);
     $transactions = $transactionHistory->getTransactions();

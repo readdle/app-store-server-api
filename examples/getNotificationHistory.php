@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 
-
 try {
     $notificationHistoryResponse = $api->getNotificationHistory(['startDate' => (time() - 60 * 60) * 1000]);
     $notificationHistoryResponseItems = $notificationHistoryResponse->getNotificationHistory();
