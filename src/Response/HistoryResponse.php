@@ -14,6 +14,9 @@ use Readdle\AppStoreServerAPI\Util\JWT;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\TransactionInfo;
 
+/**
+ * @method static HistoryResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class HistoryResponse extends PageableResponse
 {
     /**

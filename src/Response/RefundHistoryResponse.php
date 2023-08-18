@@ -13,6 +13,9 @@ use Readdle\AppStoreServerAPI\Util\JWT;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\TransactionInfo;
 
+/**
+ * @method static RefundHistoryResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class RefundHistoryResponse extends PageableResponse
 {
     /**

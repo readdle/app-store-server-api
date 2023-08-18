@@ -8,6 +8,9 @@ use Readdle\AppStoreServerAPI\Util\JWT;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\TransactionInfo;
 
+/**
+ * @method static TransactionInfoResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class TransactionInfoResponse extends AbstractResponse
 {
     /**

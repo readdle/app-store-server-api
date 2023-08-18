@@ -16,7 +16,7 @@ use function get_class;
 use function is_subclass_of;
 
 /**
- * @method PageableResponse createFromString(string $string, AbstractRequest $originalRequest)
+ * @method static PageableResponse createFromString(string $string, AbstractRequest $originalRequest)
  */
 abstract class PageableResponse extends AbstractResponse
 {

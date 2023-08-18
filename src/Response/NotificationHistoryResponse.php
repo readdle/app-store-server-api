@@ -11,6 +11,9 @@ use Readdle\AppStoreServerAPI\Exception\UnimplementedContentTypeException;
 use Readdle\AppStoreServerAPI\NotificationHistoryResponseItem;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 
+/**
+ * @method static NotificationHistoryResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class NotificationHistoryResponse extends PageableResponse
 {
     protected function __construct(array $properties, AbstractRequest $originalRequest)

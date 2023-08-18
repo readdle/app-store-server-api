@@ -8,6 +8,9 @@ use Readdle\AppStoreServerAPI\Exception\MalformedJWTException;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\SubscriptionGroupIdentifierItem;
 
+/**
+ * @method static StatusResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class StatusResponse extends AbstractResponse
 {
     /**

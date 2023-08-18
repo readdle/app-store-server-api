@@ -6,6 +6,9 @@ namespace Readdle\AppStoreServerAPI\Response;
 use Readdle\AppStoreServerAPI\NotificationHistoryResponseItem;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 
+/**
+ * @method static CheckTestNotificationResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class CheckTestNotificationResponse extends AbstractResponse
 {
     private NotificationHistoryResponseItem $notificationHistoryResponseItem;

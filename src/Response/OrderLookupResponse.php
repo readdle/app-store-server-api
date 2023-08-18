@@ -8,6 +8,9 @@ use Readdle\AppStoreServerAPI\Util\JWT;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
 use Readdle\AppStoreServerAPI\TransactionInfo;
 
+/**
+ * @method static OrderLookupResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class OrderLookupResponse extends AbstractResponse
 {
     const STATUS__VALID = 0;
