@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI\Util;
 
+use Exception;
 use Generator;
+use Readdle\AppStoreServerAPI\Math;
 use function array_key_exists;
 use function base64_decode;
 use function base64_encode;
@@ -85,6 +87,8 @@ final class Helper
 
     /**
      * @return array<int>
+     *
+     * @throws Exception
      */
     public static function bigIntToIntArray(string $bigInt): array
     {
@@ -95,13 +99,16 @@ final class Helper
         $intArray = [];
 
         while ($bigInt != '0') {
-            $intArray[] = (int) bcmod($bigInt, '16');
-            $bigInt = bcdiv($bigInt, '16');
+            $intArray[] = (int) Math::mod($bigInt, '16');
+            $bigInt = Math::div($bigInt, '16');
         }
 
         return array_reverse($intArray);
     }
 
+    /**
+     * @throws Exception
+     */
     public static function bigIntToHex(string $bigInt): string
     {
         $intArray = self::bigIntToIntArray($bigInt);

@@ -54,6 +54,7 @@ final class JWT
 
     /**
      * @throws JWTCreationException
+     * @throws Exception
      */
     public static function createFrom(Key $key, Payload $payload): string
     {

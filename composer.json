@@ -31,7 +31,6 @@
 		}
 	},
 	"require": {
-		"ext-bcmath": "*",
 		"ext-json": "*",
 		"ext-openssl": "*"
 	},

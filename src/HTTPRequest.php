@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use Exception;
 use Readdle\AppStoreServerAPI\Exception\HTTPRequestAborted;
 use Readdle\AppStoreServerAPI\Exception\HTTPRequestFailed;
 use Readdle\AppStoreServerAPI\Exception\JWTCreationException;
@@ -18,6 +19,7 @@ use function stream_context_create;
 final class HTTPRequest
 {
     /**
+     * @throws Exception
      * @throws HTTPRequestFailed
      * @throws HTTPRequestAborted
      * @throws UnimplementedContentTypeException
@@ -26,7 +28,7 @@ final class HTTPRequest
     {
         try {
             $token = JWT::createFrom($request->getKey(), $request->getPayload());
-        } catch (JWTCreationException $e) {
+        } catch (JWTCreationException|Exception $e) {
             throw new HTTPRequestAborted('Authorization token could not be generated', $e);
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI\Util;
 
 use Exception;
+use Readdle\AppStoreServerAPI\Math;
 
 final class ASN1SequenceOfInteger
 {
@@ -45,7 +46,7 @@ final class ASN1SequenceOfInteger
             $integer = '0';
 
             for ($i = $position + 2; $i < $position + $intLength + 2; $i++) {
-                $integer = bcadd(bcmul($integer, '256'), (string) ord($asn1[$i]));
+                $integer = Math::add(Math::mul($integer, '256'), (string) ord($asn1[$i]));
             }
 
             $integers[] = $integer;
