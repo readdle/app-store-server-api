@@ -1,3 +1,9 @@
+### [3.0.1] 2023-08-23
+
+**BUGFIX**:
+
+- Math bug fixed in `ASN1SequenceOfInteger`. In rare cases signature was calculated in a wrong way which led to `Wrong signature` exception in `JWT::verifySignature`
+
 ### [3.0.0] 2023-08-18
 
 ***BREAKING CHANGES:***

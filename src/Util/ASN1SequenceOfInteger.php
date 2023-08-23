@@ -69,7 +69,7 @@ final class ASN1SequenceOfInteger
         $hexParts = str_split($hexSignature, $length / 2);
 
         foreach ($hexParts as &$hexPart) {
-            if (hexdec(substr($hexPart, 0, 2)) >= self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+            if (hexdec(substr($hexPart, 0, 2)) > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
                 $hexPart = '00' . $hexPart;
             }
         }
