@@ -5,7 +5,10 @@ namespace Readdle\AppStoreServerAPI;
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 use Readdle\AppStoreServerAPI\Response\CheckTestNotificationResponse;
+use Readdle\AppStoreServerAPI\Response\ExtendRenewalDateResponse;
 use Readdle\AppStoreServerAPI\Response\HistoryResponse;
+use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateResponse;
+use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateStatusResponse;
 use Readdle\AppStoreServerAPI\Response\NotificationHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\OrderLookupResponse;
 use Readdle\AppStoreServerAPI\Response\RefundHistoryResponse;
@@ -57,6 +60,18 @@ interface AppStoreServerAPIInterface
     public function getAllSubscriptionStatuses(string $transactionId, array $queryParams = []): StatusResponse;
 
     /**
+     * Send consumption information about a consumable in-app purchase to the App Store after your server receives
+     * a consumption request notification.
+     *
+     * @param string $transactionId The transaction identifier for which you’re providing consumption information.
+     * You receive this identifier in the CONSUMPTION_REQUEST notification the App Store sends to your server.
+     * @param array<string, int|string> $requestBody The request body containing consumption information.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function sendConsumptionInformation(string $transactionId, array $requestBody): void;
+
+    /**
      * Get a customer's in-app purchases from a receipt using the order ID.
      *
      * @param string $orderId The order ID for in-app purchases that belong to the customer.
@@ -74,6 +89,46 @@ interface AppStoreServerAPIInterface
      * @throws AppStoreServerAPIException
      */
     public function getRefundHistory(string $transactionId): RefundHistoryResponse;
+
+    /**
+     * Extends the renewal date of a customer’s active subscription using the original transaction identifier.
+     *
+     * @param string $originalTransactionId The original transaction identifier of the subscription receiving a renewal
+     * date extension.
+     * @param array<string, int|string> $requestBody The request body that contains subscription-renewal-extension
+     * data for an individual subscription.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function extendSubscriptionRenewalDate(
+        string $originalTransactionId,
+        array $requestBody
+    ): ExtendRenewalDateResponse;
+
+    /**
+     * Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
+     *
+     * @param array<string, int|string> $requestBody
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function massExtendSubscriptionRenewalDate(array $requestBody): MassExtendRenewalDateResponse;
+
+    /**
+     * Checks whether a renewal date extension request completed, and provides the final count of successful
+     * or failed extensions.
+     *
+     * @param string $productId The product identifier of the auto-renewable subscription that you request
+     * a renewal-date extension for.
+     * @param string $requestIdentifier The UUID that represents your request to
+     * the massExtendSubscriptionRenewalDate() endpoint.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getStatusOfSubscriptionRenewalDateExtensionsRequest(
+        string $productId,
+        string $requestIdentifier
+    ): MassExtendRenewalDateStatusResponse;
 
     /**
      * Get a list of notifications that the App Store server attempted to send to your server.

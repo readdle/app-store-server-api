@@ -32,14 +32,38 @@ use const ARRAY_FILTER_USE_KEY;
 abstract class AbstractRequestParamsBag
 {
     /**
+     * @var array<string>
+     */
+    protected array $requiredFields = [];
+
+    /**
      * @param array<string, mixed> $params
      */
     public function __construct(array $params = [])
     {
         $reflection = new ReflectionClass($this);
 
-        $protectedProps = array_filter($reflection->getProperties(), fn ($property) => $property->isProtected());
+        $protectedProps = array_filter(
+            $reflection->getProperties(),
+            fn ($property) => $property->isProtected() && $property->getName() !== 'requiredFields'
+        );
         $protectedProps = array_combine(array_map(fn ($p) => $p->getName(), $protectedProps), $protectedProps);
+
+        $requiredFields = $this->requiredFields;
+
+        if (in_array('*', $requiredFields)) {
+            $requiredFields = array_keys($protectedProps);
+        }
+
+        $diff = array_diff($requiredFields, array_keys($params));
+
+        if ($diff) {
+            throw new Error(vsprintf(
+                '[%s] Required fields are missing: ["' . join('","', $diff) . '"]',
+                [get_class($this)]
+            ));
+        }
+
         $propConsts  = array_filter(
             $reflection->getConstants(),
             fn ($const) => strpos($const, '__') !== false,
@@ -59,23 +83,23 @@ abstract class AbstractRequestParamsBag
 
         foreach ($params as $name => $value) {
             if ($name === 'revision') {
-                throw new Error(vsprintf('[%s] Revision could not be set as a query parameter', [get_class($this)]));
+                throw new Error(vsprintf('[%s] Revision could not be set as a parameter', [get_class($this)]));
             }
 
             if (!array_key_exists($name, $protectedProps)) {
-                throw new Error(vsprintf('[%s] Unrecognized query parameter "%s"', [get_class($this), $name]));
+                throw new Error(vsprintf('[%s] Unrecognized parameter "%s"', [get_class($this), $name]));
             }
 
             if (!$this->isValueMatchingPropType($value, $protectedProps[$name])) {
                 throw new TypeError(vsprintf(
-                    '[%s] Query parameter "%s" is of wrong type "%s" ("%s" is expected)',
+                    '[%s] Parameter "%s" is of wrong type "%s" ("%s" is expected)',
                     [get_class($this), $name, gettype($value), $protectedProps[$name]->getType()]
                 ));
             }
 
             if (isset($propValues[$name]) && !$this->isValueMatchingPropValues($value, $propValues[$name])) {
                 throw new UnexpectedValueException(vsprintf(
-                    '[%s] Query parameter "%s" has wrong value %s',
+                    '[%s] Parameter "%s" has wrong value %s',
                     [get_class($this), $name, var_export($value, true)]
                 ));
             }
@@ -93,8 +117,14 @@ abstract class AbstractRequestParamsBag
         $propType = $prop->getType();
         $propTypeName = $propType->getName();
 
-        if ($propTypeName === 'int') {
-            $propTypeName = 'integer';
+        switch ($propTypeName) {
+            case 'int':
+                $propTypeName = 'integer';
+                break;
+
+            case 'bool':
+                $propTypeName = 'boolean';
+                break;
         }
 
         if ($propTypeName === 'array') {
@@ -143,7 +173,7 @@ abstract class AbstractRequestParamsBag
             $value = $this->$propName;
             $defaultValue = $prop->getDeclaringClass()->getDefaultProperties()[$propName] ?? null;
 
-            if (empty($value) || $value === $defaultValue) {
+            if (!isset($value) || $value === $defaultValue) {
                 continue;
             }
 

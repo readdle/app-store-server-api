@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI;
 
+use Exception;
 use Readdle\AppStoreServerAPI\Exception\HTTPRequestAborted;
 use Readdle\AppStoreServerAPI\Exception\HTTPRequestFailed;
 use Readdle\AppStoreServerAPI\Exception\WrongEnvironmentException;
@@ -10,15 +11,22 @@ use Readdle\AppStoreServerAPI\Exception\InvalidImplementationException;
 use Readdle\AppStoreServerAPI\Exception\MalformedResponseException;
 use Readdle\AppStoreServerAPI\Exception\UnimplementedContentTypeException;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
+use Readdle\AppStoreServerAPI\Request\ExtendSubscriptionRenewalDateRequest;
 use Readdle\AppStoreServerAPI\Request\GetAllSubscriptionStatusesRequest;
 use Readdle\AppStoreServerAPI\Request\GetNotificationHistoryRequest;
 use Readdle\AppStoreServerAPI\Request\GetRefundHistoryRequest;
+use Readdle\AppStoreServerAPI\Request\GetStatusOfSubscriptionRenewalDateExtensionsRequest;
 use Readdle\AppStoreServerAPI\Request\GetTestNotificationStatusRequest;
 use Readdle\AppStoreServerAPI\Request\GetTransactionHistoryRequest;
 use Readdle\AppStoreServerAPI\Request\GetTransactionInfoRequest;
 use Readdle\AppStoreServerAPI\Request\LookUpOrderIdRequest;
+use Readdle\AppStoreServerAPI\Request\MassExtendSubscriptionRenewalDateRequest;
 use Readdle\AppStoreServerAPI\Request\RequestTestNotificationRequest;
+use Readdle\AppStoreServerAPI\Request\SendConsumptionInformationRequest;
 use Readdle\AppStoreServerAPI\RequestBody\AbstractRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\ConsumptionRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\ExtendRenewalDateRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\MassExtendRenewalDateRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\NotificationHistoryRequestBody;
 use Readdle\AppStoreServerAPI\RequestQueryParams\AbstractRequestQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetAllSubscriptionStatusesQueryParams;
@@ -27,6 +35,9 @@ use Readdle\AppStoreServerAPI\RequestQueryParams\GetRefundHistoryQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetTransactionHistoryQueryParams;
 use Readdle\AppStoreServerAPI\Response\AbstractResponse;
 use Readdle\AppStoreServerAPI\Response\CheckTestNotificationResponse;
+use Readdle\AppStoreServerAPI\Response\ExtendRenewalDateResponse;
+use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateResponse;
+use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateStatusResponse;
 use Readdle\AppStoreServerAPI\Response\NotificationHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\OrderLookupResponse;
 use Readdle\AppStoreServerAPI\Response\RefundHistoryResponse;
@@ -103,6 +114,17 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
         return $response;
     }
 
+    public function sendConsumptionInformation(string $transactionId, array $requestBody): void
+    {
+        $this->performRequest(
+            SendConsumptionInformationRequest::class,
+            null,
+            ['transactionId' => $transactionId],
+            null,
+            new ConsumptionRequestBody($requestBody)
+        );
+    }
+
     public function lookUpOrderId(string $orderId): OrderLookupResponse
     {
         /**
@@ -129,6 +151,67 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
         );
         return $response;
     }
+
+    /**
+     * @inheritdoc
+     * @throws Exception
+     */
+    public function extendSubscriptionRenewalDate(
+        string $originalTransactionId,
+        array $requestBody
+    ): ExtendRenewalDateResponse {
+        /**
+         * @var ExtendRenewalDateResponse $response
+         */
+        $response = $this->performRequest(
+            ExtendSubscriptionRenewalDateRequest::class,
+            ExtendRenewalDateResponse::class,
+            ['originalTransactionId' => $originalTransactionId],
+            null,
+            new ExtendRenewalDateRequestBody($requestBody)
+        );
+        return $response;
+
+    }
+
+    /**
+     * @inheritdoc
+     * @throws Exception
+     */
+    public function massExtendSubscriptionRenewalDate(array $requestBody): MassExtendRenewalDateResponse
+    {
+        /**
+         * @var MassExtendRenewalDateResponse $response
+         */
+        $response = $this->performRequest(
+            MassExtendSubscriptionRenewalDateRequest::class,
+            MassExtendRenewalDateResponse::class,
+            [],
+            null,
+            new MassExtendRenewalDateRequestBody($requestBody)
+        );
+        return $response;
+
+    }
+
+    public function getStatusOfSubscriptionRenewalDateExtensionsRequest(
+        string $productId,
+        string $requestIdentifier
+    ): MassExtendRenewalDateStatusResponse {
+        /**
+         * @var MassExtendRenewalDateStatusResponse $response
+         */
+        $response = $this->performRequest(
+            GetStatusOfSubscriptionRenewalDateExtensionsRequest::class,
+            MassExtendRenewalDateStatusResponse::class,
+            [
+                'productId' => $productId,
+                'requestIdentifier' => $requestIdentifier,
+            ]
+        );
+        return $response;
+    }
+
 
     public function getNotificationHistory(array $requestBody): NotificationHistoryResponse
     {
@@ -195,14 +278,14 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
      */
     private function performRequest(
         string $requestClass,
-        string $responseClass,
+        ?string $responseClass,
         array $requestUrlVars = [],
         ?AbstractRequestQueryParams $requestQueryParams = null,
         ?AbstractRequestBody $requestBody = null
-    ): AbstractResponse {
+    ): ?AbstractResponse {
         if (
             !is_subclass_of($requestClass, AbstractRequest::class)
-            || !is_subclass_of($responseClass, AbstractResponse::class)
+            || (!empty($responseClass) && !is_subclass_of($responseClass, AbstractResponse::class))
         ) {
             throw new InvalidImplementationException($requestClass, $responseClass);
         }
@@ -214,6 +297,10 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
         }
 
         $responseText = HTTPRequest::performRequest($request);
+
+        if (empty($responseClass)) {
+            return null;
+        }
 
         return call_user_func([$responseClass, 'createFromString'], $responseText, $request);
     }
