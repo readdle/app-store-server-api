@@ -16,6 +16,7 @@ abstract class AbstractRequest
 {
     const HTTP_METHOD_GET = 'GET';
     const HTTP_METHOD_POST = 'POST';
+    const HTTP_METHOD_PUT = 'PUT';
 
     protected Key $key;
     protected Payload $payload;

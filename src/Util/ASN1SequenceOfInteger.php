@@ -43,9 +43,15 @@ final class ASN1SequenceOfInteger
                 $length--;
             }
 
+            $bytesArray = str_split(substr($asn1, $position, $length));
+
+            if (ord($bytesArray[0]) === 0 && ord($bytesArray[1]) > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+                array_shift($bytesArray);
+            }
+
             $hexParts[] = join(array_map(
                 fn (string $chr) => str_pad(dechex(ord($chr)), 2, '0', STR_PAD_LEFT),
-                str_split(substr($asn1, $position, $length))
+                $bytesArray
             ));
 
             $position += $length;
@@ -69,8 +75,12 @@ final class ASN1SequenceOfInteger
         $hexParts = str_split($hexSignature, $length / 2);
 
         foreach ($hexParts as &$hexPart) {
-            if (hexdec(substr($hexPart, 0, 2)) > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+            $firstByteHex = substr($hexPart, 0, 2);
+
+            if (hexdec($firstByteHex) > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
                 $hexPart = '00' . $hexPart;
+            } elseif ($firstByteHex === '00' && hexdec(substr($hexPart, 2, 2)) <= self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+                $hexPart = substr($hexPart, 2);
             }
         }
 

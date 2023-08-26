@@ -42,7 +42,7 @@ final class HTTPRequest
             ]
         ];
 
-        if ($httpMethod === AbstractRequest::HTTP_METHOD_POST) {
+        if (in_array($httpMethod, [AbstractRequest::HTTP_METHOD_POST, AbstractRequest::HTTP_METHOD_PUT])) {
             $body = $request->getBody();
 
             if ($body) {
@@ -63,13 +63,13 @@ final class HTTPRequest
         $statusLine = reset($http_response_header);
 
         if (!preg_match('/^HTTP\/\d\.\d (?<statusCode>\d+) (?<reasonPhrase>[^\n\r]+)$/', $statusLine, $matches)) {
-            throw new HTTPRequestFailed("Wrong Status-Line: $statusLine");
+            throw new HTTPRequestFailed($httpMethod, $url, "Wrong Status-Line: $statusLine");
         }
 
         $statusCode = (int) $matches['statusCode'];
 
         if ($statusCode !== 200) {
-            throw new HTTPRequestFailed($response, $statusCode);
+            throw new HTTPRequestFailed($httpMethod, $url, $response, $statusCode);
         }
 
         return $response;

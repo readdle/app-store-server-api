@@ -36,7 +36,7 @@ final class StatusResponse extends AbstractResponse
      *
      * @var array<SubscriptionGroupIdentifierItem>
      */
-    protected array $data;
+    protected array $data = [];
 
     /**
      * @param array<string, mixed> $properties

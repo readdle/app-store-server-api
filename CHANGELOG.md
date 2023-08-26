@@ -1,6 +1,18 @@
+### [3.1.0] 2023-08-26
+
+**BUGFIX:**
+ 
+- ASN1SequenceOfInteger: math fixes
+- StatusResponse: `data` array initialization with `[]`
+
+**IMPROVEMENTS:**
+
+- HTTPRequest: PUT method added; HTTP method and URL added to HTTPRequestFailed exception message
+- JWT: additional information in exception message
+
 ### [3.0.1] 2023-08-23
 
-**BUGFIX**:
+**BUGFIX:**
 
 - Math bug fixed in `ASN1SequenceOfInteger`. In rare cases signature was calculated in a wrong way which led to `Wrong signature` exception in `JWT::verifySignature`
 
