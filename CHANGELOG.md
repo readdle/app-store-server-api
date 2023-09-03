@@ -1,3 +1,9 @@
+### [3.1.1] 2023-09-03
+
+**BUGFIX:**
+
+- ResponseBodyV2: createFromRawNotification() fix, now it checks incoming notification to be not only a valid JSON, but also to be an array
+
 ### [3.1.0] 2023-08-26
 
 **BUGFIX:**

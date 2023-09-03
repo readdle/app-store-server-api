@@ -285,8 +285,8 @@ final class ResponseBodyV2 implements JsonSerializable
     {
         $notification = json_decode($rawNotification, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new AppStoreServerNotificationException('Notification is not a valid JSON');
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($notification)) {
+            throw new AppStoreServerNotificationException('Notification is not a valid JSON array');
         }
 
         if (!array_key_exists('signedPayload', $notification)) {
