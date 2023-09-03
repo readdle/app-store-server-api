@@ -48,6 +48,17 @@ final class TransactionInfo implements JsonSerializable
     public const REVOCATION_REASON__ISSUE_WITHIN_APP = 1;
 
     /**
+     * The customer initiated the purchase, which may be for any in-app purchase type: consumable, non-consumable,
+     * non-renewing subscription, or auto-renewable subscription.
+     */
+    public const TRANSACTION_REASON__PURCHASE = 'PURCHASE';
+
+    /**
+     * The App Store server initiated the purchase transaction to renew an auto-renewable subscription.
+     */
+    public const TRANSACTION_REASON__RENEWAL = 'RENEWAL';
+
+    /**
      * An auto-renewable subscription.
      */
     public const TYPE__AUTO_RENEWABLE_SUBSCRIPTION = 'Auto-Renewable Subscription';
@@ -152,6 +163,22 @@ final class TransactionInfo implements JsonSerializable
     private int $signedDate;
 
     /**
+     * The three-letter code that represents the country or region associated with the App Store storefront for
+     * the purchase.
+     *
+     * This property uses the ISO 3166-1 alpha-3 country code representation.
+     * This property is the same as the countryCode in StoreKit.
+     */
+    private string $storefront;
+
+    /**
+     * An Apple-defined value that uniquely identifies the App Store storefront associated with the purchase.
+     *
+     * This value is the same as the id value in StoreKit.
+     */
+    private string $storefrontId;
+
+    /**
      * The identifier of the subscription group the subscription belongs to.
      */
     private ?string $subscriptionGroupIdentifier = null;
@@ -160,6 +187,12 @@ final class TransactionInfo implements JsonSerializable
      * The unique identifier of the transaction.
      */
     private string $transactionId;
+
+    /**
+     * The reason for the purchase transaction, which indicates whether it’s a customer’s purchase or a renewal for
+     * an auto-renewable subscription that the system initiates.
+     */
+    private string $transactionReason;
 
     /**
      * The type of the in-app purchase.
@@ -192,8 +225,9 @@ final class TransactionInfo implements JsonSerializable
             ],
             'string' => [
                 'appAccountToken', 'bundleId', 'environment', 'inAppOwnershipType',
-                'offerIdentifier', 'originalTransactionId', 'productId',
-                'subscriptionGroupIdentifier', 'transactionId', 'type', 'webOrderLineItemId',
+                'offerIdentifier', 'originalTransactionId', 'productId', 'storefront',
+                'storefrontId', 'subscriptionGroupIdentifier', 'transactionId', 'transactionReason',
+                'type', 'webOrderLineItemId',
             ],
         ]);
 
@@ -349,6 +383,23 @@ final class TransactionInfo implements JsonSerializable
     }
 
     /**
+     * Returns the three-letter code that represents the country or region associated with the App Store storefront for
+     * the purchase.
+     */
+    public function getStorefront(): string
+    {
+        return $this->storefront;
+    }
+
+    /**
+     * Returns an Apple-defined value that uniquely identifies the App Store storefront associated with the purchase.
+     */
+    public function getStorefrontId(): string
+    {
+        return $this->storefrontId;
+    }
+
+    /**
      * Returns the identifier of the subscription group the subscription belongs to (if any).
      */
     public function getSubscriptionGroupIdentifier(): ?string
@@ -362,6 +413,16 @@ final class TransactionInfo implements JsonSerializable
     public function getTransactionId(): string
     {
         return $this->transactionId;
+    }
+
+    /**
+     * Returns the type of the in-app purchase.
+     *
+     * @return self::TRANSACTION_REASON__*
+     */
+    public function getTransactionReason(): string
+    {
+        return $this->transactionReason;
     }
 
     /**

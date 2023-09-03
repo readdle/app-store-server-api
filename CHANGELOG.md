@@ -1,3 +1,11 @@
+### [3.2.0] 2023-09-03
+
+**IMPROVEMENTS:**
+
+- New fields implemented
+  - RenewalInfo: renewalDate
+  - TransactionInfo: storefront, storefrontId, transactionReason
+
 ### [3.1.1] 2023-09-03
 
 **BUGFIX:**

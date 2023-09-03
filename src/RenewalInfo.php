@@ -135,6 +135,16 @@ final class RenewalInfo implements JsonSerializable
     private int $recentSubscriptionStartDate;
 
     /**
+     * The UNIX time, in milliseconds, that the most recent auto-renewable subscription purchase expires.
+     *
+     * The renewalDate is a value that’s always present in the payload for auto-renewable subscriptions,
+     * even for expired subscriptions. This date indicates the expiration date of the most recent auto-renewable
+     * subscription purchase, including renewals, and may be in the past. For subscriptions that renew successfully,
+     * the renewalDate is the date when the subscription renews.
+     */
+    private ?int $renewalDate;
+
+    /**
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
      */
     private int $signedDate;
@@ -153,7 +163,7 @@ final class RenewalInfo implements JsonSerializable
         $typeCaster = Helper::arrayTypeCastGenerator($rawRenewalInfo, [
             'int' => [
                 'autoRenewStatus', 'expirationIntent', 'gracePeriodExpiresDate', 'offerType',
-                'priceIncreaseStatus', 'recentSubscriptionStartDate', 'signedDate',
+                'priceIncreaseStatus', 'recentSubscriptionStartDate', 'renewalDate', 'signedDate',
             ],
             'bool' => [
                 'isInBillingRetryPeriod',
@@ -281,6 +291,14 @@ final class RenewalInfo implements JsonSerializable
     public function getRecentSubscriptionStartDate(): int
     {
         return $this->recentSubscriptionStartDate;
+    }
+
+    /**
+     * Returns the UNIX time, in milliseconds, that the most recent auto-renewable subscription purchase expires.
+     */
+    public function getRenewalDate(): ?int
+    {
+        return $this->renewalDate;
     }
 
     /**
