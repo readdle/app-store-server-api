@@ -12,6 +12,7 @@ final class AppMetadata implements JsonSerializable
 {
     /**
      * The unique identifier of the app that the notification applies to.
+     *
      * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
      * environment.
      */
@@ -42,6 +43,13 @@ final class AppMetadata implements JsonSerializable
      */
     private ?TransactionInfo $transactionInfo;
 
+    /**
+     * The status of an auto-renewable subscription as of the signedDate in the ResponseBodyV2.
+     *
+     * This field appears only for notifications sent for auto-renewable subscriptions.
+     */
+    private ?int $status;
+
     private function __construct()
     {
         // just a stub which prevents this class from direct instantiation
@@ -54,6 +62,7 @@ final class AppMetadata implements JsonSerializable
     {
         $appMetadata = new self();
         $typeCaster = Helper::arrayTypeCastGenerator($rawData, [
+            'int' => ['status'],
             'string' => ['appAppleId', 'bundleId', 'bundleVersion', 'environment'],
         ]);
 
@@ -122,6 +131,14 @@ final class AppMetadata implements JsonSerializable
     public function getTransactionInfo(): ?TransactionInfo
     {
         return $this->transactionInfo;
+    }
+
+    /**
+     * Returns the status of an auto-renewable subscription as of the signedDate in the ResponseBodyV2.
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status;
     }
 
     /**

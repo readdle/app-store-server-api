@@ -1,28 +1,35 @@
+### [3.3.0] 2023-09-06
+
+**IMPROVEMENTS:**
+
+- New field implemented
+  - `AppMetadata`: `status`
+
 ### [3.2.0] 2023-09-03
 
 **IMPROVEMENTS:**
 
 - New fields implemented
-  - RenewalInfo: renewalDate
-  - TransactionInfo: storefront, storefrontId, transactionReason
+  - `RenewalInfo`: `renewalDate`
+  - `TransactionInfo`: `storefront`, `storefrontId`, `transactionReason`
 
 ### [3.1.1] 2023-09-03
 
 **BUGFIX:**
 
-- ResponseBodyV2: createFromRawNotification() fix, now it checks incoming notification to be not only a valid JSON, but also to be an array
+- `ResponseBodyV2`: `createFromRawNotification()` fix, now it checks incoming notification to be not only a valid JSON, but also to be an array
 
 ### [3.1.0] 2023-08-26
 
 **BUGFIX:**
  
-- ASN1SequenceOfInteger: math fixes
-- StatusResponse: `data` array initialization with `[]`
+- `ASN1SequenceOfInteger`: math fixes
+- `StatusResponse`: `data` array initialization with `[]`
 
 **IMPROVEMENTS:**
 
-- HTTPRequest: PUT method added; HTTP method and URL added to HTTPRequestFailed exception message
-- JWT: additional information in exception message
+- `HTTPRequest`: PUT method added; HTTP method and URL added to `HTTPRequestFailed` exception message
+- `JWT`: additional information in exception message
 
 ### [3.0.1] 2023-08-23
 
