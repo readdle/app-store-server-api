@@ -1,3 +1,9 @@
+### [3.3.1] 2023-09-07
+
+**BUGFIX:**
+
+- `AppMetadata`: `renewalInfo` and `transactionInfo` now are `NULL` by default (to prevent `Typed property ... must not be accessed before initialization` error)
+
 ### [3.3.0] 2023-09-06
 
 **IMPROVEMENTS:**

@@ -36,12 +36,12 @@ final class AppMetadata implements JsonSerializable
     /**
      * Subscription renewal information.
      */
-    private ?RenewalInfo $renewalInfo;
+    private ?RenewalInfo $renewalInfo = null;
 
     /**
      * Transaction information.
      */
-    private ?TransactionInfo $transactionInfo;
+    private ?TransactionInfo $transactionInfo = null;
 
     /**
      * The status of an auto-renewable subscription as of the signedDate in the ResponseBodyV2.
