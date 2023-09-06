@@ -48,7 +48,7 @@ final class AppMetadata implements JsonSerializable
      *
      * This field appears only for notifications sent for auto-renewable subscriptions.
      */
-    private ?int $status;
+    private ?int $status = null;
 
     private function __construct()
     {
