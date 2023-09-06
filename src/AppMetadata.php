@@ -21,12 +21,12 @@ final class AppMetadata implements JsonSerializable
     /**
      * The bundle identifier of the app.
      */
-    private string $bundleId;
+    private ?string $bundleId = null;
 
     /**
      * The version of the build that identifies an iteration of the bundle.
      */
-    private string $bundleVersion;
+    private ?string $bundleVersion = null;
 
     /**
      * The server environment that the notification applies to, either sandbox or production.
@@ -94,7 +94,7 @@ final class AppMetadata implements JsonSerializable
     /**
      * Returns the bundle identifier of the app.
      */
-    public function getBundleId(): string
+    public function getBundleId(): ?string
     {
         return $this->bundleId;
     }
@@ -102,7 +102,7 @@ final class AppMetadata implements JsonSerializable
     /**
      * Returns the version of the build that identifies an iteration of the bundle.
      */
-    public function getBundleVersion(): string
+    public function getBundleVersion(): ?string
     {
         return $this->bundleVersion;
     }

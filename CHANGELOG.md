@@ -2,7 +2,7 @@
 
 **BUGFIX:**
 
-- `AppMetadata`: `renewalInfo`, `transactionInfo` and `status` now are `NULL` by default (to prevent `Typed property ... must not be accessed before initialization` error)
+- `AppMetadata`: `bundleId`, `bundleVersion`, `renewalInfo`, `transactionInfo` and `status` now are `NULL` by default (to prevent `Typed property ... must not be accessed before initialization` error)
 
 ### [3.3.0] 2023-09-06
 
