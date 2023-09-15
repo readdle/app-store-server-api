@@ -1,3 +1,9 @@
+### [3.3.2] 2023-09-16
+
+**BUGFIX:**
+
+- ASN1SequenceOfInteger: multiple `00` bytes in the beginning of integer numbers handled when parsing HEX signature representation
+
 ### [3.3.1] 2023-09-07
 
 **BUGFIX:**
