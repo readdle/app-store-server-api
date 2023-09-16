@@ -1,3 +1,8 @@
+### [3.4.0] 2023-09-16
+
+**IMPROVEMENTS:**
+- New `notificationType`/`subtype` in `ResponseBodyV2`
+
 ### [3.3.2] 2023-09-16
 
 **BUGFIX:**
