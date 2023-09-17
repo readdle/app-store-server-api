@@ -142,7 +142,7 @@ final class RenewalInfo implements JsonSerializable
      * subscription purchase, including renewals, and may be in the past. For subscriptions that renew successfully,
      * the renewalDate is the date when the subscription renews.
      */
-    private ?int $renewalDate;
+    private ?int $renewalDate = null;
 
     /**
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.

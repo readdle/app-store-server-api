@@ -169,14 +169,14 @@ final class TransactionInfo implements JsonSerializable
      * This property uses the ISO 3166-1 alpha-3 country code representation.
      * This property is the same as the countryCode in StoreKit.
      */
-    private string $storefront;
+    private ?string $storefront = null;
 
     /**
      * An Apple-defined value that uniquely identifies the App Store storefront associated with the purchase.
      *
      * This value is the same as the id value in StoreKit.
      */
-    private string $storefrontId;
+    private ?string $storefrontId = null;
 
     /**
      * The identifier of the subscription group the subscription belongs to.
@@ -192,7 +192,7 @@ final class TransactionInfo implements JsonSerializable
      * The reason for the purchase transaction, which indicates whether it’s a customer’s purchase or a renewal for
      * an auto-renewable subscription that the system initiates.
      */
-    private string $transactionReason;
+    private ?string $transactionReason = null;
 
     /**
      * The type of the in-app purchase.
@@ -386,7 +386,7 @@ final class TransactionInfo implements JsonSerializable
      * Returns the three-letter code that represents the country or region associated with the App Store storefront for
      * the purchase.
      */
-    public function getStorefront(): string
+    public function getStorefront(): ?string
     {
         return $this->storefront;
     }
@@ -394,7 +394,7 @@ final class TransactionInfo implements JsonSerializable
     /**
      * Returns an Apple-defined value that uniquely identifies the App Store storefront associated with the purchase.
      */
-    public function getStorefrontId(): string
+    public function getStorefrontId(): ?string
     {
         return $this->storefrontId;
     }
@@ -420,7 +420,7 @@ final class TransactionInfo implements JsonSerializable
      *
      * @return self::TRANSACTION_REASON__*
      */
-    public function getTransactionReason(): string
+    public function getTransactionReason(): ?string
     {
         return $this->transactionReason;
     }

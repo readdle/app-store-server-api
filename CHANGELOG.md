@@ -1,6 +1,15 @@
+### [3.4.1] 2023-09-17
+
+**BUGFIX:**
+
+- `TransactionInfo`: `storefront`, `storefrontId`, and `transactionReason` are now nullable and null by default, in order to be compatible with old notifications
+- `RenewalInfo`: `renewalDate` is now null by default, in order to be compatible with old notifications
+- `Response\NotificationHistoryResponse`: `paginationToken` presence in response is now optional
+
 ### [3.4.0] 2023-09-16
 
 **IMPROVEMENTS:**
+
 - New `notificationType`/`subtype` in `ResponseBodyV2`
 
 ### [3.3.2] 2023-09-16
