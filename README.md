@@ -110,6 +110,14 @@ Get information about a single transaction for your app.
 
 Get the statuses for all of a customer’s auto-renewable subscriptions in your app.
 
+### Consumption information
+
+#### [Send Consumption Information](https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information)
+
+`AppStoreServerAPI::sendConsumptionInformation(string $transactionId, array $requestBody)`
+
+Send consumption information about a consumable in-app purchase to the App Store after your server receives a consumption request notification.
+
 ### Order ID lookup
 
 #### [Look Up Order ID](https://developer.apple.com/documentation/appstoreserverapi/look_up_order_id)
@@ -125,6 +133,26 @@ Get a customer’s in-app purchases from a receipt using the order ID.
 `AppStoreServerAPI::getRefundHistory(string $transactionId)`
 
 Get a list of all of a customer’s refunded in-app purchases for your app.
+
+### Subscription-renewal-date extension
+
+#### [Extend a Subscription Renewal Date](https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date)
+
+`AppStoreServerAPI::extendSubscriptionRenewalDate(string $originalTransactionId, array $requestBody)`
+
+Extends the renewal date of a customer’s active subscription using the original transaction identifier.
+
+#### [Extend Subscription Renewal Dates for All Active Subscribers](https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers)
+
+`AppStoreServerAPI::massExtendSubscriptionRenewalDate(array $requestBody)`
+
+Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
+
+#### [Get Status of Subscription Renewal Date Extensions](https://developer.apple.com/documentation/appstoreserverapi/get_status_of_subscription_renewal_date_extensions)
+
+`AppStoreServerAPI::getStatusOfSubscriptionRenewalDateExtensionsRequest(string $productId, string $requestIdentifier)`
+
+Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.
 
 ### App Store Server Notifications history
 
@@ -147,25 +175,3 @@ Ask App Store Server Notifications to send a test notification to your server.
 `AppStoreServerAPI::getTestNotificationStatus(string $testNotificationToken)`
 
 Check the status of the test App Store server notification sent to your server.
-
-# What is not covered... yet
-
-### Consumption information
-
-#### [Send Consumption Information](https://developer.apple.com/documentation/appstoreserverapi/send_consumption_information)
-
-Send consumption information about a consumable in-app purchase to the App Store after your server receives a consumption request notification.
-
-### Subscription-renewal-date extension
-
-#### [Extend a Subscription Renewal Date](https://developer.apple.com/documentation/appstoreserverapi/extend_a_subscription_renewal_date)
-
-Extends the renewal date of a customer’s active subscription using the original transaction identifier.
-
-#### [Extend Subscription Renewal Dates for All Active Subscribers](https://developer.apple.com/documentation/appstoreserverapi/extend_subscription_renewal_dates_for_all_active_subscribers)
-
-Uses a subscription’s product identifier to extend the renewal date for all of its eligible active subscribers.
-
-#### [Get Status of Subscription Renewal Date Extensions](https://developer.apple.com/documentation/appstoreserverapi/get_status_of_subscription_renewal_date_extensions)
-
-Checks whether a renewal date extension request completed, and provides the final count of successful or failed extensions.

@@ -1,3 +1,13 @@
+### [3.5.0] 2023-09-21
+
+**IMPROVEMENTS:**
+
+Missing endpoints added:
+- Send Consumption Information
+- Extend a Subscription Renewal Date
+- Extend Subscription Renewal Dates for All Active Subscribers
+- Get Status of Subscription Renewal Date Extensions
+
 ### [3.4.1] 2023-09-17
 
 **BUGFIX:**
