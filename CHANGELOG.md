@@ -1,20 +1,61 @@
+### [3.4.1] 2023-09-17
+
+**BUGFIX:**
+
+- `TransactionInfo`: `storefront`, `storefrontId`, and `transactionReason` are now nullable and null by default, in order to be compatible with old notifications
+- `RenewalInfo`: `renewalDate` is now null by default, in order to be compatible with old notifications
+- `Response\NotificationHistoryResponse`: `paginationToken` presence in response is now optional
+
+### [3.4.0] 2023-09-16
+
+**IMPROVEMENTS:**
+
+- New `notificationType`/`subtype` in `ResponseBodyV2`
+
+### [3.3.2] 2023-09-16
+
+**BUGFIX:**
+
+- ASN1SequenceOfInteger: multiple `00` bytes in the beginning of integer numbers handled when parsing HEX signature representation
+
+### [3.3.1] 2023-09-07
+
+**BUGFIX:**
+
+- `AppMetadata`: `bundleId`, `bundleVersion`, `renewalInfo`, `transactionInfo` and `status` now are `NULL` by default (to prevent `Typed property ... must not be accessed before initialization` error)
+
+### [3.3.0] 2023-09-06
+
+**IMPROVEMENTS:**
+
+- New field implemented
+  - `AppMetadata`: `status`
+
+### [3.2.0] 2023-09-03
+
+**IMPROVEMENTS:**
+
+- New fields implemented
+  - `RenewalInfo`: `renewalDate`
+  - `TransactionInfo`: `storefront`, `storefrontId`, `transactionReason`
+
 ### [3.1.1] 2023-09-03
 
 **BUGFIX:**
 
-- ResponseBodyV2: createFromRawNotification() fix, now it checks incoming notification to be not only a valid JSON, but also to be an array
+- `ResponseBodyV2`: `createFromRawNotification()` fix, now it checks incoming notification to be not only a valid JSON, but also to be an array
 
 ### [3.1.0] 2023-08-26
 
 **BUGFIX:**
  
-- ASN1SequenceOfInteger: math fixes
-- StatusResponse: `data` array initialization with `[]`
+- `ASN1SequenceOfInteger`: math fixes
+- `StatusResponse`: `data` array initialization with `[]`
 
 **IMPROVEMENTS:**
 
-- HTTPRequest: PUT method added; HTTP method and URL added to HTTPRequestFailed exception message
-- JWT: additional information in exception message
+- `HTTPRequest`: PUT method added; HTTP method and URL added to `HTTPRequestFailed` exception message
+- `JWT`: additional information in exception message
 
 ### [3.0.1] 2023-08-23
 

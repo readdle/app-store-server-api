@@ -226,11 +226,7 @@ final class JWT
         $publicKey = Helper::formatPEM($headers[self::HEADER_X5C][0]);
 
         if (openssl_verify($input, $signatureAsASN1, $publicKey, self::ALGORITHM['hashAlgorithm']) !== 1) {
-            throw new Exception(sprintf(
-                'Wrong signature (%s / %s)',
-                $signature,
-                base64_encode($signatureAsASN1)
-            ));
+            throw new Exception('Wrong signature');
         }
     }
 }

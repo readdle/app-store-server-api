@@ -22,7 +22,10 @@ final class NotificationHistoryResponse extends PageableResponse
             $this->items[] = NotificationHistoryResponseItem::createFromRawItem($rawResponseItem);
         }
 
-        $properties['revision'] = $properties['paginationToken'];
+        if (!empty($properties['paginationToken'])) {
+            $properties['revision'] = $properties['paginationToken'];
+        }
+
         unset($properties['notificationHistory'], $properties['paginationToken']);
         parent::__construct($properties, $originalRequest);
     }

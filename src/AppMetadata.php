@@ -12,6 +12,7 @@ final class AppMetadata implements JsonSerializable
 {
     /**
      * The unique identifier of the app that the notification applies to.
+     *
      * This property is available for apps that are downloaded from the App Store; it isn't present in the sandbox
      * environment.
      */
@@ -20,12 +21,12 @@ final class AppMetadata implements JsonSerializable
     /**
      * The bundle identifier of the app.
      */
-    private string $bundleId;
+    private ?string $bundleId = null;
 
     /**
      * The version of the build that identifies an iteration of the bundle.
      */
-    private string $bundleVersion;
+    private ?string $bundleVersion = null;
 
     /**
      * The server environment that the notification applies to, either sandbox or production.
@@ -35,12 +36,19 @@ final class AppMetadata implements JsonSerializable
     /**
      * Subscription renewal information.
      */
-    private ?RenewalInfo $renewalInfo;
+    private ?RenewalInfo $renewalInfo = null;
 
     /**
      * Transaction information.
      */
-    private ?TransactionInfo $transactionInfo;
+    private ?TransactionInfo $transactionInfo = null;
+
+    /**
+     * The status of an auto-renewable subscription as of the signedDate in the ResponseBodyV2.
+     *
+     * This field appears only for notifications sent for auto-renewable subscriptions.
+     */
+    private ?int $status = null;
 
     private function __construct()
     {
@@ -54,6 +62,7 @@ final class AppMetadata implements JsonSerializable
     {
         $appMetadata = new self();
         $typeCaster = Helper::arrayTypeCastGenerator($rawData, [
+            'int' => ['status'],
             'string' => ['appAppleId', 'bundleId', 'bundleVersion', 'environment'],
         ]);
 
@@ -85,7 +94,7 @@ final class AppMetadata implements JsonSerializable
     /**
      * Returns the bundle identifier of the app.
      */
-    public function getBundleId(): string
+    public function getBundleId(): ?string
     {
         return $this->bundleId;
     }
@@ -93,7 +102,7 @@ final class AppMetadata implements JsonSerializable
     /**
      * Returns the version of the build that identifies an iteration of the bundle.
      */
-    public function getBundleVersion(): string
+    public function getBundleVersion(): ?string
     {
         return $this->bundleVersion;
     }
@@ -122,6 +131,14 @@ final class AppMetadata implements JsonSerializable
     public function getTransactionInfo(): ?TransactionInfo
     {
         return $this->transactionInfo;
+    }
+
+    /**
+     * Returns the status of an auto-renewable subscription as of the signedDate in the ResponseBodyV2.
+     */
+    public function getStatus(): ?int
+    {
+        return $this->status;
     }
 
     /**

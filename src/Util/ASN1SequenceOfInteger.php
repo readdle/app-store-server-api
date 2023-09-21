@@ -79,8 +79,11 @@ final class ASN1SequenceOfInteger
 
             if (hexdec($firstByteHex) > self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
                 $hexPart = '00' . $hexPart;
-            } elseif ($firstByteHex === '00' && hexdec(substr($hexPart, 2, 2)) <= self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
-                $hexPart = substr($hexPart, 2);
+            } else {
+                while ($firstByteHex === '00' && hexdec(substr($hexPart, 2, 2)) <= self::ASN1_BIG_INT_MAX_FIRST_BYTE) {
+                    $hexPart = substr($hexPart, 2);
+                    $firstByteHex = substr($hexPart, 0, 2);
+                }
             }
         }
 
