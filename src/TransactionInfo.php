@@ -74,6 +74,17 @@ final class TransactionInfo
     public const TYPE__NON_RENEWING_SUBSCRIPTION = 'Non-Renewing Subscription';
 
     /**
+     * The customer initiated the purchase
+     */
+    public const TRANSACTION_REASON__PURCHASE = 'PURCHASE';
+
+    /**
+     * The App Store server initiated the purchase transaction to renew an auto-renewable subscription
+     *
+     */
+    public const TRANSACTION_REASON__RENEWAL = 'RENEWAL';
+
+    /**
      * A UUID that associates the transaction with a user on your own service.
      * If the app doesn't provide an appAccountToken, this string is empty.
      */
@@ -167,7 +178,12 @@ final class TransactionInfo
     private string $transactionId;
 
     /**
-     *
+     * The cause of a purchase transaction
+     */
+    private string $transactionReason;
+
+    /**
+     * The type of the in-app purchase.
      */
     private string $type;
 
@@ -195,7 +211,7 @@ final class TransactionInfo
             'string' => [
                 'appAccountToken', 'bundleId', 'environment', 'inAppOwnershipType',
                 'offerIdentifier', 'originalTransactionId', 'productId',
-                'subscriptionGroupIdentifier', 'transactionId', 'type', 'webOrderLineItemId',
+                'subscriptionGroupIdentifier', 'transactionId', 'transactionReason', 'type', 'webOrderLineItemId',
             ],
         ]);
 
@@ -306,6 +322,14 @@ final class TransactionInfo
     public function getTransactionId(): string
     {
         return $this->transactionId;
+    }
+
+    /**
+     * @return self::TRANSACTION_REASON__*
+     */
+    public function getTransactionReason(): string
+    {
+        return $this->transactionReason;
     }
 
     /**
