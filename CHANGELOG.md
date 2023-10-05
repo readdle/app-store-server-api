@@ -1,3 +1,9 @@
+### [3.5.1] 2023-10-05
+
+**BUGFIX:**
+
+- Syntax issue in PageableResponse for PHP 7.4, kudos to @JamieSTV
+
 ### [3.5.0] 2023-09-21
 
 **IMPROVEMENTS:**
