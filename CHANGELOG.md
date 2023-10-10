@@ -1,3 +1,9 @@
+### [3.5.2] 2023-10-10
+
+**BUGFIX:**
+
+- Logic issue in PageableResponse, after fixing syntax issue in `3.5.1`
+
 ### [3.5.1] 2023-10-05
 
 **BUGFIX:**

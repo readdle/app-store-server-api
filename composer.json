@@ -23,7 +23,7 @@
 		"php"
 	],
 	"homepage": "https://github.com/readdle/app-store-server-api",
-	"version": "3.5.1",
+	"version": "3.5.2",
 	"php": ">=7.4",
 	"autoload": {
 		"psr-4": {

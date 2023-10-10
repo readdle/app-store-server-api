@@ -62,7 +62,7 @@ abstract class PageableResponse extends AbstractResponse
                 $queryParams = $page->originalRequest->getQueryParams();
 
                 if (is_subclass_of($queryParams, PageableQueryParams::class)) {
-                    $class = get_class($queryParams);
+                    $class = get_class($page->originalRequest);
                     $nextRequest = new $class(
                         $page->originalRequest->getKey(),
                         $page->originalRequest->getPayload(),
