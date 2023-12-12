@@ -21,6 +21,21 @@ final class TransactionInfo implements JsonSerializable
     public const IN_APP_OWNERSHIP_TYPE__PURCHASED = 'PURCHASED';
 
     /**
+     * A payment mode of a product discount that indicates a free trial.
+     */
+    public const OFFER_DISCOUNT_TYPE__FREE_TRIAL = 'FREE_TRIAL';
+
+    /**
+     * A payment mode of a product discount that is billed over a single or multiple billing periods.
+     */
+    public const OFFER_DISCOUNT_TYPE__PAY_AS_YOU_GO = 'PAY_AS_YOU_GO';
+
+    /**
+     * A payment mode of a product discount that is paid up front.
+     */
+    public const OFFER_DISCOUNT_TYPE__PAY_UP_FRONT = 'PAY_UP_FRONT';
+
+    /**
      * An introductory offer.
      */
     public const OFFER_TYPE__INTRODUCTORY = 1;
@@ -90,6 +105,12 @@ final class TransactionInfo implements JsonSerializable
     private string $bundleId;
 
     /**
+     * The three-letter ISO 4217 currency code associated with the price parameter. This value is present only if price is
+     * present.
+     */
+    private ?string $currency = null;
+
+    /**
      * The server environment, either sandbox or production.
      */
     private string $environment;
@@ -111,6 +132,11 @@ final class TransactionInfo implements JsonSerializable
     private ?bool $isUpgraded = null;
 
     /**
+     * The payment mode you configure for the subscription offer, such as Free Trial, Pay As You Go, or Pay Up Front.
+     */
+    private ?string $offerDiscountType = null;
+
+    /**
      * The identifier that contains the promo code or the promotional offer identifier.
      * NOTE: This field applies only when the offerType is either promotional offer or subscription offer code.
      */
@@ -130,6 +156,13 @@ final class TransactionInfo implements JsonSerializable
      * The transaction identifier of the original purchase.
      */
     private string $originalTransactionId;
+
+    /**
+     * An integer value that represents the price multiplied by 1000 of the in-app purchase or subscription offer you
+     * configured in App Store Connect and that the system records at the time of the purchase. The currency parameter
+     * indicates the currency of this price.
+     */
+    private ?int $price = null;
 
     /**
      * The product identifier of the in-app purchase.
@@ -217,15 +250,15 @@ final class TransactionInfo implements JsonSerializable
         $transactionInfo = new self();
         $typeCaster = Helper::arrayTypeCastGenerator($rawTransactionInfo, [
             'int' => [
-                'expiresDate', 'offerType', 'originalPurchaseDate', 'purchaseDate',
+                'expiresDate', 'offerType', 'originalPurchaseDate', 'price', 'purchaseDate',
                 'quantity', 'revocationDate', 'revocationReason', 'signedDate',
             ],
             'bool' => [
                 'isUpgraded',
             ],
             'string' => [
-                'appAccountToken', 'bundleId', 'environment', 'inAppOwnershipType',
-                'offerIdentifier', 'originalTransactionId', 'productId', 'storefront',
+                'appAccountToken', 'bundleId', 'currency', 'environment', 'inAppOwnershipType',
+                'offerDiscountType', 'offerIdentifier', 'originalTransactionId', 'productId', 'storefront',
                 'storefrontId', 'subscriptionGroupIdentifier', 'transactionId', 'transactionReason',
                 'type', 'webOrderLineItemId',
             ],
@@ -253,6 +286,14 @@ final class TransactionInfo implements JsonSerializable
     public function getBundleId(): string
     {
         return $this->bundleId;
+    }
+
+    /**
+     * Returns the three-letter ISO 4217 currency code for the price of the product.
+     */
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
     }
 
     /**
@@ -303,6 +344,17 @@ final class TransactionInfo implements JsonSerializable
     }
 
     /**
+     * Returns a value that represents the offer discount type (if any).
+     *
+     * @return null|self::OFFER_DISCOUNT_TYPE__*
+     */
+    public function getOfferDiscountType(): ?string
+    {
+        /** @phpstan-ignore-next-line */
+        return $this->offerDiscountType;
+    }
+
+    /**
      * Returns a value that represents the promotional offer type (if any).
      *
      * @return null|self::OFFER_TYPE__*
@@ -327,6 +379,15 @@ final class TransactionInfo implements JsonSerializable
     public function getOriginalTransactionId(): string
     {
         return $this->originalTransactionId;
+    }
+
+    /**
+     * Returns the price multiplied by 1000 of the in-app purchase or subscription offer that you configured in App Store
+     * Connect, as an integer.
+     */
+    public function getPrice(): ?int
+    {
+        return $this->price;
     }
 
     /**

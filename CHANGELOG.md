@@ -1,3 +1,10 @@
+### [3.6.0] 2023-12-11
+
+**IMPROVEMENTS:**
+
+New fields implemented
+- `TransactionInfo`: `price`, `currency`, and `offerDiscountType` from [App Store Server API version 1.10](https://developer.apple.com/documentation/appstoreserverapi/app_store_server_api_changelog#4307459)
+
 ### [3.5.2] 2023-10-10
 
 **BUGFIX:**
