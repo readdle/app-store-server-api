@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace Readdle\AppStoreServerAPI\Response;
 
+use Readdle\AppStoreServerAPI\Request\AbstractRequest;
+
+/**
+ * @method static MassExtendRenewalDateStatusResponse createFromString(string $string, AbstractRequest $originalRequest)
+ */
 final class MassExtendRenewalDateStatusResponse extends AbstractResponse
 {
     /**
