@@ -19,13 +19,13 @@ API initialization:
 ```
 try {
     $api = new \Readdle\AppStoreServerAPI\AppStoreServerAPI(
-        'Production',
+        \Readdle\AppStoreServerAPI\Environment::PRODUCTION,
         '1a2b3c4d-1234-4321-1111-1a2b3c4d5e6f',
         'com.readdle.MyBundle',
         'ABC1234DEF',
         "-----BEGIN PRIVATE KEY-----\n<base64-encoded private key goes here>\n-----END PRIVATE KEY-----"
     );
-} catch (WrongEnvironmentException $e) {
+} catch (\Readdle\AppStoreServerAPI\Exception\WrongEnvironmentException $e) {
     exit($e->getMessage());
 }
 ```
@@ -36,7 +36,7 @@ Performing API call:
 try {
     $transactionHistory = $api->getTransactionHistory($transactionId, ['sort' => GetTransactionHistoryQueryParams::SORT__DESCENDING]);
     $transactions = $transactionHistory->getTransactions();
-} catch (AppStoreServerAPIException $e) {
+} catch (\Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException $e) {
     exit($e->getMessage());
 }
 ```
@@ -47,9 +47,9 @@ try {
 try {
     $responseBodyV2 = \Readdle\AppStoreServerAPI\ResponseBodyV2::createFromRawNotification(
         '{"signedPayload":"..."}',
-        Helper::toPEM(file_get_contents('https://www.apple.com/certificateauthority/AppleRootCA-G3.cer'))
+        \Readdle\AppStoreServerAPI\Util\Helper::toPEM(file_get_contents('https://www.apple.com/certificateauthority/AppleRootCA-G3.cer'))
     );
-} catch (AppStoreServerNotificationException $e) {
+} catch (\Readdle\AppStoreServerAPI\Exception\AppStoreServerNotificationException $e) {
     exit('Server notification could not be processed: ' . $e->getMessage());
 }
 ```
@@ -81,7 +81,7 @@ For `Order ID lookup` you have to specify `orderId`. This endpoint (and, consequ
 `notification.json` structure is the same as you receive it in your server-to-server notification endpoint:
 
 ```
-{"signedPayload":"<JWS token goes here>"}
+{"signedPayload":"<JWT token goes here>"}
 ```
 
 # What is covered

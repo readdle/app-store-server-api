@@ -43,7 +43,7 @@ final class JWT
     const HEADER_KID = 'kid';
     const HEADER_X5C = 'x5c';
 
-    const REQUIRED_JWS_HEADERS = [
+    const REQUIRED_JWT_HEADERS = [
         self::HEADER_ALG,
         self::HEADER_X5C,
     ];
@@ -159,7 +159,7 @@ final class JWT
 
         $missingHeaders = [];
 
-        foreach (self::REQUIRED_JWS_HEADERS as $headerName) {
+        foreach (self::REQUIRED_JWT_HEADERS as $headerName) {
             if (!array_key_exists($headerName, $headers)) {
                 $missingHeaders[] = $headerName;
             }
