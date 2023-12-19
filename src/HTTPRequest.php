@@ -68,7 +68,7 @@ final class HTTPRequest
 
         $statusCode = (int) $matches['statusCode'];
 
-        if ($statusCode !== 200) {
+        if (!in_array($statusCode, [200, 202])) {
             throw new HTTPRequestFailed($httpMethod, $url, $response, $statusCode);
         }
 

@@ -1,3 +1,9 @@
+### [3.6.1] 2023-12-19
+
+**BUGFIX:**
+
+- Treat "202 Accepted" as successful response (App Store returns it on "Send consumption information" request), kudos to @teanooki for pointing this out
+
 ### [3.6.0] 2023-12-11
 
 **IMPROVEMENTS:**
