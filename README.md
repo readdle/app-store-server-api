@@ -1,6 +1,6 @@
 # About
 
-This is a ***zero-dependencies\* pure PHP*** library that allows managing customer transactions using the `App Store Server API` and handling server-to-server notifications by providing everything you need to impement the `App Store Server Notifications V2` endpoint.
+This is a ***zero-dependencies\* pure PHP*** library that allows managing customer transactions using the [`App Store Server API`](https://developer.apple.com/documentation/appstoreserverapi) and handling server-to-server notifications by providing everything you need to impement the [`App Store Server Notifications V2`](https://developer.apple.com/documentation/appstoreservernotifications) endpoint.
 
 <sub>* Zero-dependencies means that this library doesn't rely on any third-party library. At the same time this library relies on such essential PHP extensions as `json` and `openssl`</sub>
 
