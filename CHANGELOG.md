@@ -1,3 +1,9 @@
+### [3.6.2] 2024-01-25
+
+**BUGFIX:**
+
+- If the certificate string already has a prefix, there is no need to add it
+
 ### [3.6.1] 2023-12-19
 
 **BUGFIX:**
