@@ -70,7 +70,7 @@ final class Helper
 
     public static function formatPEM(string $certificate): string
     {
-        if (strrpos($certificate, "-----BEGIN CERTIFICATE-----\n") !== false) {
+        if (strpos($certificate, "-----BEGIN CERTIFICATE-----\n") !== false) {
             return $certificate;
         }
 
