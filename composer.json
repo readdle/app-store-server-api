@@ -1,6 +1,6 @@
 {
 	"name": "readdle/app-store-server-api",
-	"description": "PHP library which allows to manage customer's transactions using App Store Server API and handle server-to-server notifications using App Store Server Notifications V2",
+	"description": "Pure-PHP library that allows managing customer transactions using the App Store Server API and handling server-to-server notifications using the App Store Server Notifications V2",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
