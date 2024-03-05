@@ -59,7 +59,10 @@ final class HTTPRequest
             stream_context_create($options)
         );
 
-        /** @noinspection PhpNullIsNotCompatibleWithParameterInspection */
+        if (empty($http_response_header)) {
+            throw new HTTPRequestFailed($httpMethod, $url, 'No response headers found, probably empty response');
+        }
+
         $statusLine = reset($http_response_header);
 
         if (!preg_match('/^HTTP\/\d\.\d (?<statusCode>\d+) (?<reasonPhrase>[^\n\r]+)$/', $statusLine, $matches)) {

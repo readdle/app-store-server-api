@@ -1,3 +1,9 @@
+### [3.6.3] 2024-03-25
+
+**BUGFIX:**
+
+- Handle empty response headers in case if HTTP request to the API fails (and it fails regularly, kudos to Apple)
+
 ### [3.6.2] 2024-01-25
 
 **BUGFIX:**
