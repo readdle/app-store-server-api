@@ -6,8 +6,18 @@ namespace Readdle\AppStoreServerAPI\Exception;
 
 final class HTTPRequestFailed extends AppStoreServerAPIException
 {
+
+    public int $statusCode;
+
+    public string $responseText;
+
     public function __construct(string $method, string $url, string $message, int $code = 0)
     {
+
+        $this->statusCode = $code;
+
+        $this->responseText = $message;
+
         if ($code === 0) {
             parent::__construct("HTTP request [$method $url] failed: $message");
         } else {
@@ -22,7 +32,7 @@ final class HTTPRequestFailed extends AppStoreServerAPIException
      */
     public function getStatusCode(): int
     {
-        return $this->getCode();
+        return $this->statusCode;
     }
 
     /**
@@ -32,6 +42,6 @@ final class HTTPRequestFailed extends AppStoreServerAPIException
      */
     public function getResponseText(): string
     {
-        return $this->getMessage();
+        return $this->responseText;
     }
 }
