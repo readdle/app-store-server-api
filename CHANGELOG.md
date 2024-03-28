@@ -1,3 +1,9 @@
+### [3.7.0] 2024-03-28
+
+**IMPROVEMENTS:**
+
+- Now the response content of the HTTP response is available in `HTTPRequestFailed` exception using `getResponseText()` method, kudos to @soxft for this pointing out 
+
 ### [3.6.3] 2024-03-25
 
 **BUGFIX:**

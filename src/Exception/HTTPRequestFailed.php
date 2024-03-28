@@ -5,12 +5,21 @@ namespace Readdle\AppStoreServerAPI\Exception;
 
 final class HTTPRequestFailed extends AppStoreServerAPIException
 {
-    public function __construct(string $method, string $url, string $message, int $code = 0)
+    private string $responseText;
+
+    public function __construct(string $method, string $url, string $message, int $statusCode = 0, string $responseText = '')
     {
-        if ($code === 0) {
+        $this->responseText = $responseText;
+
+        if ($statusCode === 0) {
             parent::__construct("HTTP request [$method $url] failed: $message");
         } else {
-            parent::__construct("HTTP request [$method $url] failed with status code $code. Response text is: $message", $code);
+            parent::__construct("HTTP request [$method $url] failed with status code $statusCode. Response text is: $responseText", $statusCode);
         }
+    }
+
+    public function getResponseText(): string
+    {
+        return $this->responseText;
     }
 }
