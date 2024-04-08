@@ -1,8 +1,17 @@
+### [3.8.0] 2024-04-08
+
+**IMPROVEMENTS:**
+
+- Nullable properties now are NOT converted to empty int/bool/float/string in AppMetadata, RenewalInfo, ResponseBodyV2, TransactionInfo, kudos to @dbrkv for pointing this out
+- ArrayTypeCastGenerator moved to the separate class
+- PHPUnit tests introduced (just the first one for ArrayTypeCastGenerator atm)
+- Examples reworked a bit (RenewalInfo/TransactionInfo printing moved to the separate helper function)
+
 ### [3.7.0] 2024-03-28
 
 **IMPROVEMENTS:**
 
-- Now the response content of the HTTP response is available in `HTTPRequestFailed` exception using `getResponseText()` method, kudos to @soxft for this pointing out 
+- Now the response content of the HTTP response is available in `HTTPRequestFailed` exception using `getResponseText()` method, kudos to @soxft for pointing this out 
 
 ### [3.6.3] 2024-03-25
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI;
 
 use JsonSerializable;
-use Readdle\AppStoreServerAPI\Util\Helper;
+use Readdle\AppStoreServerAPI\Util\ArrayTypeCaseGenerator;
 
 use function array_key_exists;
 
@@ -61,9 +61,9 @@ final class AppMetadata implements JsonSerializable
     public static function createFromRawData(array $rawData): self
     {
         $appMetadata = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($rawData, [
-            'int' => ['status'],
-            'string' => ['appAppleId', 'bundleId', 'bundleVersion', 'environment'],
+        $typeCaster = (new ArrayTypeCaseGenerator())($rawData, [
+            'int' => ['?status'],
+            'string' => ['?appAppleId', '?bundleId', '?bundleVersion', 'environment'],
         ]);
 
         foreach ($typeCaster as $prop => $value) {

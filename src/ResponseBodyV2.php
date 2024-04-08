@@ -6,8 +6,8 @@ namespace Readdle\AppStoreServerAPI;
 use JsonSerializable;
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerNotificationException;
 use Readdle\AppStoreServerAPI\Exception\MalformedJWTException;
+use Readdle\AppStoreServerAPI\Util\ArrayTypeCaseGenerator;
 use Readdle\AppStoreServerAPI\Util\JWT;
-use Readdle\AppStoreServerAPI\Util\Helper;
 
 use function array_key_exists;
 use function json_decode;
@@ -366,7 +366,7 @@ final class ResponseBodyV2 implements JsonSerializable
         $responseBodyV2 = new self();
         $responseBodyV2->appMetadata = AppMetadata::createFromRawData($payload['data']);
 
-        $typeCaster = Helper::arrayTypeCastGenerator($payload, [
+        $typeCaster = (new ArrayTypeCaseGenerator())($payload, [
             'int' => ['signedDate'],
             'string' => ['notificationType', 'subtype', 'notificationUUID', 'version'],
         ]);

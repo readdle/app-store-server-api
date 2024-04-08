@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI;
 
 use JsonSerializable;
-use Readdle\AppStoreServerAPI\Util\Helper;
+use Readdle\AppStoreServerAPI\Util\ArrayTypeCaseGenerator;
 
 use function get_object_vars;
 
@@ -160,17 +160,16 @@ final class RenewalInfo implements JsonSerializable
     public static function createFromRawRenewalInfo(array $rawRenewalInfo): self
     {
         $renewalInfo = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($rawRenewalInfo, [
+        $typeCaster = (new ArrayTypeCaseGenerator())($rawRenewalInfo, [
             'int' => [
-                'autoRenewStatus', 'expirationIntent', 'gracePeriodExpiresDate', 'offerType',
-                'priceIncreaseStatus', 'recentSubscriptionStartDate', 'renewalDate', 'signedDate',
+                'autoRenewStatus', '?expirationIntent', '?gracePeriodExpiresDate', '?offerType',
+                '?priceIncreaseStatus', 'recentSubscriptionStartDate', '?renewalDate', 'signedDate',
             ],
             'bool' => [
-                'isInBillingRetryPeriod',
+                '?isInBillingRetryPeriod',
             ],
             'string' => [
-                'autoRenewProductId', 'environment', 'offerIdentifier',
-                'originalTransactionId', 'productId',
+                'autoRenewProductId', 'environment', '?offerIdentifier', 'originalTransactionId', 'productId',
             ],
         ]);
 

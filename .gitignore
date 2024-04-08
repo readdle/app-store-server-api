@@ -1,5 +1,6 @@
 .idea/
 .php-cs-fixer.cache
+.phpunit.result.cache
 examples/credentials.json
 examples/notification.json
 vendor/

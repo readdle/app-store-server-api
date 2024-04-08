@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Readdle\AppStoreServerAPI;
 
 use JsonSerializable;
-use Readdle\AppStoreServerAPI\Util\Helper;
+use Readdle\AppStoreServerAPI\Util\ArrayTypeCaseGenerator;
 
 use function get_object_vars;
 
@@ -248,19 +248,20 @@ final class TransactionInfo implements JsonSerializable
     public static function createFromRawTransactionInfo(array $rawTransactionInfo): self
     {
         $transactionInfo = new self();
-        $typeCaster = Helper::arrayTypeCastGenerator($rawTransactionInfo, [
+
+        $typeCaster = (new ArrayTypeCaseGenerator())($rawTransactionInfo, [
             'int' => [
-                'expiresDate', 'offerType', 'originalPurchaseDate', 'price', 'purchaseDate',
-                'quantity', 'revocationDate', 'revocationReason', 'signedDate',
+                '?expiresDate', '?offerType', 'originalPurchaseDate', '?price', 'purchaseDate',
+                'quantity', '?revocationDate', '?revocationReason', 'signedDate',
             ],
             'bool' => [
-                'isUpgraded',
+                '?isUpgraded',
             ],
             'string' => [
-                'appAccountToken', 'bundleId', 'currency', 'environment', 'inAppOwnershipType',
-                'offerDiscountType', 'offerIdentifier', 'originalTransactionId', 'productId', 'storefront',
-                'storefrontId', 'subscriptionGroupIdentifier', 'transactionId', 'transactionReason',
-                'type', 'webOrderLineItemId',
+                '?appAccountToken', 'bundleId', '?currency', 'environment', 'inAppOwnershipType',
+                '?offerDiscountType', '?offerIdentifier', 'originalTransactionId', 'productId', '?storefront',
+                '?storefrontId', '?subscriptionGroupIdentifier', 'transactionId', '?transactionReason',
+                'type', '?webOrderLineItemId',
             ],
         ]);
 
