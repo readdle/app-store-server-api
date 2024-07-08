@@ -1,3 +1,10 @@
+### [3.8.1] 2024-07-08
+
+**BUGFIX:**
+
+- Default TTL for payload introduced and set to 5 min. Previous value of 1 hour (which is the maximum) seems to be the cause of failed responses in some cases.
+- Makefile introduced just to have a shortcut 'make shell' for running Docker container using PHP image and having project directory mounted 
+
 ### [3.8.0] 2024-04-08
 
 **IMPROVEMENTS:**

@@ -9,6 +9,7 @@ use function time;
 final class Payload
 {
     const MAX_TTL = 3600;
+    const DEFAULT_TTL = 300;
 
     /**
      * Issuer ID from the Keys page in App Store Connect (Ex: "57246542-96fe-1a63-e053-0824d011072a").
@@ -34,7 +35,7 @@ final class Payload
         $this->issuerId = $issuerId;
         $this->bundleId = $bundleId;
 
-        $this->ttl = $ttl === 0 ? self::MAX_TTL : min($ttl, self::MAX_TTL);
+        $this->ttl = $ttl === 0 ? self::DEFAULT_TTL : min($ttl, self::MAX_TTL);
     }
 
     /**
