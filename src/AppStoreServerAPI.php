@@ -18,6 +18,7 @@ use Readdle\AppStoreServerAPI\Request\GetRefundHistoryRequest;
 use Readdle\AppStoreServerAPI\Request\GetStatusOfSubscriptionRenewalDateExtensionsRequest;
 use Readdle\AppStoreServerAPI\Request\GetTestNotificationStatusRequest;
 use Readdle\AppStoreServerAPI\Request\GetTransactionHistoryRequest;
+use Readdle\AppStoreServerAPI\Request\GetTransactionHistoryRequestV2;
 use Readdle\AppStoreServerAPI\Request\GetTransactionInfoRequest;
 use Readdle\AppStoreServerAPI\Request\LookUpOrderIdRequest;
 use Readdle\AppStoreServerAPI\Request\MassExtendSubscriptionRenewalDateRequest;
@@ -80,6 +81,20 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
          */
         $response = $this->performRequest(
             GetTransactionHistoryRequest::class,
+            HistoryResponse::class,
+            ['transactionId' => $transactionId],
+            new GetTransactionHistoryQueryParams($queryParams)
+        );
+        return $response;
+    }
+
+    public function getTransactionHistoryV2(string $transactionId, array $queryParams = []): HistoryResponse
+    {
+        /**
+         * @var HistoryResponse $response
+         */
+        $response = $this->performRequest(
+            GetTransactionHistoryRequestV2::class,
             HistoryResponse::class,
             ['transactionId' => $transactionId],
             new GetTransactionHistoryQueryParams($queryParams)
