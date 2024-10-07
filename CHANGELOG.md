@@ -1,5 +1,7 @@
 ### [3.9.0] 2024-10-07
 
+**IMPROVEMENTS:**
+
 - In-app purchase history V2 support added (kudos to @anegve)
 
 ### [3.8.1] 2024-07-08
