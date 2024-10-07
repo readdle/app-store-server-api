@@ -12,7 +12,7 @@ This is a ***zero-dependencies\* pure PHP*** library that allows managing custom
 
 Nothing special here, just use composer to install the package:
 
-> composer install readdle/app-store-server-api
+> composer require readdle/app-store-server-api
 
 # Usage
 
