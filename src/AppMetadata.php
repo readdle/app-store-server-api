@@ -29,6 +29,13 @@ final class AppMetadata implements JsonSerializable
     private ?string $bundleVersion = null;
 
     /**
+     * The reason the customer requested the refund.
+     * 
+     * This field appears only for CONSUMPTION_REQUEST notifications.
+     */
+    private ?string $consumptionRequestReason = null;
+
+    /**
      * The server environment that the notification applies to, either sandbox or production.
      */
     private string $environment;
@@ -63,7 +70,7 @@ final class AppMetadata implements JsonSerializable
         $appMetadata = new self();
         $typeCaster = (new ArrayTypeCaseGenerator())($rawData, [
             'int' => ['?status'],
-            'string' => ['?appAppleId', '?bundleId', '?bundleVersion', 'environment'],
+            'string' => ['?appAppleId', '?bundleId', '?bundleVersion', '?consumptionRequestReason', 'environment'],
         ]);
 
         foreach ($typeCaster as $prop => $value) {
@@ -105,6 +112,14 @@ final class AppMetadata implements JsonSerializable
     public function getBundleVersion(): ?string
     {
         return $this->bundleVersion;
+    }
+
+    /**
+     * Returns the reason the customer requested the refund.
+     */
+    public function getConsumptionRequestReason(): ?string
+    {
+        return $this->consumptionRequestReason;
     }
 
     /**
