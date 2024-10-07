@@ -90,11 +90,19 @@ For `Order ID lookup` you have to specify `orderId`. This endpoint (and, consequ
 
 # What is covered
 
-### In-app purchase history
+### In-app purchase history V1 (Deprecated, but left for backwards compatibility)
+
+#### [Get Transaction History](https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history_v1)
+
+`AppStoreServerAPI::getTransactionHistory(string $transactionId, array $queryParams)`
+
+Get a customer’s in-app purchase transaction history for your app.
+
+### In-app purchase history V2
 
 #### [Get Transaction History](https://developer.apple.com/documentation/appstoreserverapi/get_transaction_history)
 
-`AppStoreServerAPI::getTransactionHistory(string $transactionId, array $queryParams)`
+`AppStoreServerAPI::getTransactionHistoryV2(string $transactionId, array $queryParams)`
 
 Get a customer’s in-app purchase transaction history for your app.
 
