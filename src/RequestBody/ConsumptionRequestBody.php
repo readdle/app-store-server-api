@@ -231,6 +231,26 @@ final class ConsumptionRequestBody extends AbstractRequestBody
     const PLAY_TIME__OVER_16_DAYS = 7;
 
     /**
+     * The refund preference is undeclared.
+     */
+    const REFUND_PREFERENCE__UNDECLARED = 0;
+
+    /**
+     * You prefer that Apple grants the refund.
+     */
+    const REFUND_PREFERENCE__GRANT = 1;
+
+    /**
+     * You prefer that Apple declines the refund.
+     */
+    const REFUND_PREFERENCE__DECLINE = 2;
+
+    /**
+     * You have no preference whether Apple grants or declines the refund.
+     */
+    const REFUND_PREFERENCE__NO_PREFERENCE = 3;
+
+    /**
      * Account status is undeclared.
      */
     const USER_STATUS__UNDECLARED = 0;
@@ -301,6 +321,11 @@ final class ConsumptionRequestBody extends AbstractRequestBody
     protected int $playTime;
 
     /**
+     * A value that indicates your preferred outcome for the refund request.
+     */
+    protected int $refundPreference;
+
+    /**
      * A Boolean value of true or false that indicates whether you provided, prior to its purchase, a free sample or trial of the content, or information about its functionality.
      */
     protected bool $sampleContentProvided;
@@ -310,5 +335,17 @@ final class ConsumptionRequestBody extends AbstractRequestBody
      */
     protected int $userStatus;
 
-    protected array $requiredFields = ['*'];
+    protected array $requiredFields = [
+        'accountTenure',
+        'appAccountToken',
+        'consumptionStatus',
+        'customerConsented',
+        'deliveryStatus',
+        'lifetimeDollarsPurchased',
+        'lifetimeDollarsRefunded',
+        'platform',
+        'playTime',
+        'sampleContentProvided',
+        'userStatus',
+    ];
 }
