@@ -1,3 +1,9 @@
+### [3.10.1] 2024-10-18
+
+**BUGFIX:**
+- `AbstractRequestParamsBag::isValueMatchingPropValues()` fixed (double negation if value is an array, kudos to @neoighodaro)
+- `AbstractRequestQueryParams::getQueryString()` fixed (bool values are now explicitly converted to strings, kudos to @neoighodaro)
+
 ### [3.10.0] 2024-10-18
 
 **IMPROVEMENTS:**

@@ -22,6 +22,8 @@ abstract class AbstractRequestQueryParams extends AbstractRequestParamsBag
                     $queryStringParams,
                     array_map(fn ($v) => $propName . '=' . rawurlencode($v), $value)
                 );
+            } elseif (is_bool($value)) {
+                $queryStringParams[] = $propName . '=' . ($value ? 'true' : 'false');
             } else {
                 $queryStringParams[] = $propName . '=' . rawurlencode($value);
             }

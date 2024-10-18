@@ -152,7 +152,7 @@ abstract class AbstractRequestParamsBag
         }
 
         if (is_array($value)) {
-            return !!array_filter($value, fn ($v) => !in_array($v, $propValues));
+            return !array_filter($value, fn ($v) => !in_array($v, $propValues));
         }
 
         return false;
