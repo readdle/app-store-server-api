@@ -1,3 +1,10 @@
+### [3.10.0] 2024-10-18
+
+**IMPROVEMENTS:**
+
+- New field `consumptionRequestReason` added to `AppMetadata`
+- New field `refundPreference` (and corresponding constants) added to `ConsumptionRequestBody` (kudos to @sedlak477)
+
 ### [3.9.0] 2024-10-07
 
 **IMPROVEMENTS:**
