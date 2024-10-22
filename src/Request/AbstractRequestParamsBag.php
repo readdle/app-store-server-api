@@ -41,18 +41,13 @@ abstract class AbstractRequestParamsBag
      */
     public function __construct(array $params = [])
     {
-        $reflection = new ReflectionClass($this);
-
-        $protectedProps = array_filter(
-            $reflection->getProperties(),
-            fn ($property) => $property->isProtected() && $property->getName() !== 'requiredFields'
-        );
-        $protectedProps = array_combine(array_map(fn ($p) => $p->getName(), $protectedProps), $protectedProps);
+        $protectedProps = $this->getProtectedProps();
+        $protectedPropsCombined = array_combine(array_map(fn ($p) => $p->getName(), $protectedProps), $protectedProps);
 
         $requiredFields = $this->requiredFields;
 
         if (in_array('*', $requiredFields)) {
-            $requiredFields = array_keys($protectedProps);
+            $requiredFields = array_keys($protectedPropsCombined);
         }
 
         $diff = array_diff($requiredFields, array_keys($params));
@@ -64,16 +59,10 @@ abstract class AbstractRequestParamsBag
             ));
         }
 
-        $propConsts  = array_filter(
-            $reflection->getConstants(),
-            fn ($const) => strpos($const, '__') !== false,
-            ARRAY_FILTER_USE_KEY
-        );
-
         /** @var array<string, mixed> $propValues */
         $propValues = [];
 
-        foreach ($propConsts as $constName => $constValue) {
+        foreach ($this->getPropConsts() as $constName => $constValue) {
             $camelPropName =  lcfirst(join(array_map(
                 fn ($part) => ucfirst(strtolower($part)),
                 explode('_', explode('__', $constName)[0])
@@ -86,14 +75,14 @@ abstract class AbstractRequestParamsBag
                 throw new Error(vsprintf('[%s] Revision could not be set as a parameter', [get_class($this)]));
             }
 
-            if (!array_key_exists($name, $protectedProps)) {
+            if (!array_key_exists($name, $protectedPropsCombined)) {
                 throw new Error(vsprintf('[%s] Unrecognized parameter "%s"', [get_class($this), $name]));
             }
 
-            if (!$this->isValueMatchingPropType($value, $protectedProps[$name])) {
+            if (!$this->isValueMatchingPropType($value, $protectedPropsCombined[$name])) {
                 throw new TypeError(vsprintf(
                     '[%s] Parameter "%s" is of wrong type "%s" ("%s" is expected)',
-                    [get_class($this), $name, gettype($value), $protectedProps[$name]->getType()]
+                    [get_class($this), $name, gettype($value), $protectedPropsCombined[$name]->getType()]
                 ));
             }
 
@@ -165,10 +154,7 @@ abstract class AbstractRequestParamsBag
     {
         $props = [];
 
-        $reflection = new ReflectionClass($this);
-        $protectedProps = array_filter($reflection->getProperties(), fn ($property) => $property->isProtected());
-
-        foreach ($protectedProps as $prop) {
+        foreach ($this->getProtectedProps() as $prop) {
             $propName = $prop->getName();
             $value = $this->$propName;
             $defaultValue = $prop->getDeclaringClass()->getDefaultProperties()[$propName] ?? null;
@@ -185,6 +171,28 @@ abstract class AbstractRequestParamsBag
         }
 
         return $props;
+    }
 
+    /**
+     * @return ReflectionProperty[]
+     */
+    protected function getProtectedProps(): array
+    {
+        return array_filter(
+            (new ReflectionClass($this))->getProperties(ReflectionProperty::IS_PROTECTED),
+            fn ($property) => $property->getName() !== 'requiredFields'
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getPropConsts(): array
+    {
+        return array_filter(
+            (new ReflectionClass($this))->getConstants(),
+            fn ($const) => strpos($const, '__') !== false,
+            ARRAY_FILTER_USE_KEY
+        );
     }
 }
