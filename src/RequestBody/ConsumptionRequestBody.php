@@ -323,7 +323,7 @@ final class ConsumptionRequestBody extends AbstractRequestBody
     /**
      * A value that indicates your preferred outcome for the refund request.
      */
-    protected int $refundPreference;
+    protected ?int $refundPreference = null;
 
     /**
      * A Boolean value of true or false that indicates whether you provided, prior to its purchase, a free sample or trial of the content, or information about its functionality.

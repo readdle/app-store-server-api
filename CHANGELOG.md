@@ -1,3 +1,13 @@
+### [3.10.2] 2024-10-22
+
+**BUGFIX:**
+
+- Calling `sendConsumptionInformation()` w/o passing optional parameter `refundPreference` results in fatal error (kudos to @javiermarinros)
+
+**IMPROVEMENTS:**
+
+- Insignificant refactoring of `AbstractRequestParamsBag` class
+
 ### [3.10.1] 2024-10-18
 
 **BUGFIX:**
