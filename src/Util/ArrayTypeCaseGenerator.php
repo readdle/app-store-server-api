@@ -52,6 +52,11 @@ final class ArrayTypeCaseGenerator
 
                         break;
 
+                    case 'array':
+                        yield $key => (array) $input[$key];
+
+                        break;
+
                     default:
                         yield $key => null;
                 }

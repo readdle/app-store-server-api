@@ -9,10 +9,17 @@ function printJsonSerializableEntity($entity): void
         switch (true) {
             case $value === '':
                 $value = '""';
+
                 break;
 
             case $value === null:
                 $value = '<NULL>';
+
+                break;
+
+            case is_array($value):
+                $value = json_encode($value);
+
                 break;
         }
 

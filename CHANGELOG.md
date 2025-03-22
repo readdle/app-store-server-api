@@ -1,3 +1,10 @@
+### [3.11.0] 2025/03/22
+
+**IMPROVEMENTS:**
+
+- Introduced new field to `TransactionInfo`: `appTransactionId`
+- Introduced new fields to `RenewalInfo`: `appAccountToken`, `appTransactionId`, `currency`, `eligibleWinBackOfferIds`, `offerDiscountType`, `offerPeriod`, `renewalPrice`
+
 ### [3.10.2] 2024-10-22
 
 **BUGFIX:**

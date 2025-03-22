@@ -23,6 +23,9 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'string' => [
                 'notNullableString', '?nullableString',
             ],
+            'array' => [
+                'notNullableArray', '?nullableArray',
+            ],
         ];
 
         $testInput = [
@@ -34,6 +37,8 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'nullableFloat' => null,
             'notNullableString' => 's',
             'nullableString' => null,
+            'notNullableArray' => [1],
+            'nullableArray' => null,
         ];
         $testOutput = [];
         $testTypeCaster = (new ArrayTypeCaseGenerator())($testInput, $testTypeCaseMap);
@@ -51,6 +56,8 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'nullableFloat' => null,
             'notNullableString' => 's',
             'nullableString' => null,
+            'notNullableArray' => [1],
+            'nullableArray' => null,
         ], $testOutput);
     }
 
@@ -69,6 +76,9 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'string' => [
                 'notNullableString', 'nullableString',
             ],
+            'array' => [
+                'notNullableArray', 'nullableArray',
+            ],
         ];
 
         $testInput = [
@@ -80,6 +90,8 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'nullableFloat' => null,
             'notNullableString' => 's',
             'nullableString' => null,
+            'notNullableArray' => [1],
+            'nullableArray' => null,
         ];
         $testOutput = [];
         $testTypeCaster = (new ArrayTypeCaseGenerator())($testInput, $testTypeCaseMap);
@@ -97,6 +109,8 @@ final class ArrayTypeCaseGeneratorTest extends TestCase
             'nullableFloat' => 0.0,
             'notNullableString' => 's',
             'nullableString' => '',
+            'notNullableArray' => [1],
+            'nullableArray' => [],
         ], $testOutput);
     }
 }

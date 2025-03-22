@@ -8,6 +8,8 @@ This is a ***zero-dependencies\* pure PHP*** library that allows managing custom
 > 
 > If you need to deal with receipts instead of (or additionally to) API, check out [this library](https://github.com/readdle/app-store-receipt-verification).
 
+### App Store Server API version compatibility: 1.15 - 2025/02/21
+
 # Installation
 
 Nothing special here, just use composer to install the package:

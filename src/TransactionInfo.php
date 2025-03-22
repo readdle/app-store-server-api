@@ -51,6 +51,11 @@ final class TransactionInfo implements JsonSerializable
     public const OFFER_TYPE__SUBSCRIPTION = 3;
 
     /**
+     * A win-back offer.
+     */
+    public const OFFER_TYPE__WIN_BACK = 4;
+
+    /**
      * Apple Support refunded the transaction on behalf of the customer for other reasons; for example, an accidental
      * purchase.
      */
@@ -98,6 +103,11 @@ final class TransactionInfo implements JsonSerializable
      * If the app doesn't provide an appAccountToken, this string is empty.
      */
     private ?string $appAccountToken = null;
+
+    /**
+     * The unique identifier of the app download transaction.
+     */
+    private ?string $appTransactionId = null;
 
     /**
      * The bundle identifier of the app.
@@ -258,7 +268,7 @@ final class TransactionInfo implements JsonSerializable
                 '?isUpgraded',
             ],
             'string' => [
-                '?appAccountToken', 'bundleId', '?currency', 'environment', 'inAppOwnershipType',
+                '?appAccountToken', '?appTransactionId', 'bundleId', '?currency', 'environment', 'inAppOwnershipType',
                 '?offerDiscountType', '?offerIdentifier', 'originalTransactionId', 'productId', '?storefront',
                 '?storefrontId', '?subscriptionGroupIdentifier', 'transactionId', '?transactionReason',
                 'type', '?webOrderLineItemId',
@@ -279,6 +289,14 @@ final class TransactionInfo implements JsonSerializable
     public function getAppAccountToken(): ?string
     {
         return $this->appAccountToken;
+    }
+
+    /**
+     * Returns the unique identifier of the app download transaction.
+     */
+    private function getAppTransactionId(): ?string
+    {
+        return $this->appTransactionId;
     }
 
     /**
@@ -351,7 +369,6 @@ final class TransactionInfo implements JsonSerializable
      */
     public function getOfferDiscountType(): ?string
     {
-        /** @phpstan-ignore-next-line */
         return $this->offerDiscountType;
     }
 

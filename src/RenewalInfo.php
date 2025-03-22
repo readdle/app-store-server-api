@@ -60,6 +60,11 @@ final class RenewalInfo implements JsonSerializable
     public const OFFER_TYPE__SUBSCRIPTION_OFFER_CODE = 3;
 
     /**
+     * A win-back offer.
+     */
+    public const OFFER_TYPE__WIN_BACK = 4;
+
+    /**
      * The customer hasn't yet responded to an auto-renewable subscription price increase that requires customer
      * consent.
      */
@@ -73,6 +78,17 @@ final class RenewalInfo implements JsonSerializable
     public const PRICE_INCREASE_STATUS__CONSENTED = 1;
 
     /**
+     * The UUID that an app optionally generates to map a customer’s In-App Purchase with its resulting App Store
+     * transaction.
+     */
+    private ?string $appAccountToken = null;
+
+    /**
+     * The unique identifier of the app download transaction.
+     */
+    private ?string $appTransactionId = null;
+
+    /**
      * The product identifier of the product that renews at the next billing period.
      */
     private string $autoRenewProductId;
@@ -81,6 +97,19 @@ final class RenewalInfo implements JsonSerializable
      * The renewal status for an auto-renewable subscription.
      */
     private int $autoRenewStatus;
+
+    /**
+     * The three-letter ISO 4217 currency code for the price of the product.
+     */
+    private ?string $currency = null;
+
+    /**
+     * An array of win-back offer identifiers that a customer is eligible to redeem,
+     * which sorts the identifiers with the best offers first.
+     *
+     * @var string[]
+     */
+    private ?array $eligibleWinBackOfferIds = null;
 
     /**
      * The server environment, either sandbox or production.
@@ -104,9 +133,34 @@ final class RenewalInfo implements JsonSerializable
     private ?bool $isInBillingRetryPeriod = null;
 
     /**
+     * The payment mode for subscription offers on an auto-renewable subscription.
+     */
+    private ?string $offerDiscountType = null;
+
+    /**
      * The offer code or the promotional offer identifier.
      */
     private ?string $offerIdentifier = null;
+
+    /**
+     * The duration of the offer.
+     *
+     * This field is in ISO 8601 duration format.
+     * The following list shows examples of offer period values.
+     *
+     * - Value: P1M
+     *   - Single period length: 1 month
+     *   - Period count: 1
+     *
+     * - Value: P2M
+     *   - Single period length: 1 month
+     *   - Period count: 2
+     *
+     * - Value: P3D
+     *   - Single period length: 3 days
+     *   - Period count: 1
+     */
+    private ?string $offerPeriod = null;
 
     /**
      * The type of subscription offer.
@@ -145,6 +199,11 @@ final class RenewalInfo implements JsonSerializable
     private ?int $renewalDate = null;
 
     /**
+     * The renewal price, in milli-units, of the auto-renewable subscription that renews at the next billing period.
+     */
+    private ?int $renewalPrice = null;
+
+    /**
      * The UNIX time, in milliseconds, that the App Store signed the JSON Web Signature data.
      */
     private int $signedDate;
@@ -163,13 +222,17 @@ final class RenewalInfo implements JsonSerializable
         $typeCaster = (new ArrayTypeCaseGenerator())($rawRenewalInfo, [
             'int' => [
                 'autoRenewStatus', '?expirationIntent', '?gracePeriodExpiresDate', '?offerType',
-                '?priceIncreaseStatus', 'recentSubscriptionStartDate', '?renewalDate', 'signedDate',
+                '?priceIncreaseStatus', 'recentSubscriptionStartDate', '?renewalDate', '?renewalPrice', 'signedDate',
             ],
             'bool' => [
                 '?isInBillingRetryPeriod',
             ],
             'string' => [
-                'autoRenewProductId', 'environment', '?offerIdentifier', 'originalTransactionId', 'productId',
+                '?appAccountToken', '?appTransactionId', 'autoRenewProductId', '?currency', 'environment',
+                '?offerDiscountType', '?offerIdentifier', '?offerPeriod', 'originalTransactionId', 'productId',
+            ],
+            'array' => [
+                '?eligibleWinBackOfferIds'
             ],
         ]);
 
@@ -178,6 +241,23 @@ final class RenewalInfo implements JsonSerializable
         }
 
         return $renewalInfo;
+    }
+
+    /**
+     * Returns the UUID that an app optionally generates to map a customer’s In-App Purchase with its resulting App Store
+     * transaction.
+     */
+    public function getAppAccountToken(): ?string
+    {
+        return $this->appAccountToken;
+    }
+
+    /**
+     * Returns the unique identifier of the app download transaction.
+     */
+    public function getAppTransactionId(): ?string
+    {
+        return $this->appTransactionId;
     }
 
     /**
@@ -197,6 +277,25 @@ final class RenewalInfo implements JsonSerializable
     {
         /** @phpstan-ignore-next-line */
         return $this->autoRenewStatus;
+    }
+
+    /**
+     * Returns the three-letter ISO 4217 currency code for the price of the product.
+     */
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    /**
+     * Returns an array of win-back offer identifiers that a customer is eligible to redeem,
+     * which sorts the identifiers with the best offers first.
+     *
+     * @return string[]
+     */
+    public function getEligibleWinBackOfferIds(): ?array
+    {
+        return $this->eligibleWinBackOfferIds;
     }
 
     /**
@@ -238,11 +337,28 @@ final class RenewalInfo implements JsonSerializable
     }
 
     /**
+     * Returns the payment mode for subscription offers on an auto-renewable subscription.
+     */
+    public function getOfferDiscountType(): ?string
+    {
+        return $this->offerDiscountType;
+    }
+
+    /**
      * Returns the offer code or the promotional offer identifier (if any).
      */
     public function getOfferIdentifier(): ?string
     {
         return $this->offerIdentifier;
+    }
+
+    /**
+     * Returns the duration of the offer.
+     *
+     */
+    public function getOfferPeriod(): ?string
+    {
+        return $this->offerPeriod;
     }
 
     /**
@@ -298,6 +414,15 @@ final class RenewalInfo implements JsonSerializable
     public function getRenewalDate(): ?int
     {
         return $this->renewalDate;
+    }
+
+    /**
+     * Returns the renewal price, in milli-units, of the auto-renewable subscription that renews at the next billing
+     * period.
+     */
+    public function getRenewalPrice(): ?int
+    {
+        return $this->renewalPrice;
     }
 
     /**
