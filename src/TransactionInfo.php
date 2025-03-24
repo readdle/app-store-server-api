@@ -294,7 +294,7 @@ final class TransactionInfo implements JsonSerializable
     /**
      * Returns the unique identifier of the app download transaction.
      */
-    private function getAppTransactionId(): ?string
+    public function getAppTransactionId(): ?string
     {
         return $this->appTransactionId;
     }

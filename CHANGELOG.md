@@ -1,3 +1,9 @@
+### [3.11.1] 2025/03/24
+
+**BUGFIX:**
+
+- `TransactionInfo::getAppTransactionId()` make it public (silly bug)
+
 ### [3.11.0] 2025/03/22
 
 **IMPROVEMENTS:**
