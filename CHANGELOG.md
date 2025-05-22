@@ -1,3 +1,9 @@
+### [3.12.0] 2025/05/22
+
+**IMPROVEMENTS:**
+
+- New `notificationType` = `ONE_TIME_CHARGE` in `ResponseBodyV2`
+
 ### [3.11.1] 2025/03/24
 
 **BUGFIX:**
