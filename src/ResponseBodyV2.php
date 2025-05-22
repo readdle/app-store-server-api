@@ -171,6 +171,13 @@ final class ResponseBodyV2 implements JsonSerializable
     const NOTIFICATION_TYPE__SUBSCRIBED = 'SUBSCRIBED';
 
     /**
+     * A notification type that indicates the customer purchased a consumable, non-consumable, or non-renewing
+     * subscription. The App Store also sends this notification when the customer receives access to a non-consumable
+     * product through Family Sharing.
+     */
+    const NOTIFICATION_TYPE__ONE_TIME_CHARGE = 'ONE_TIME_CHARGE';
+
+    /**
      * A notification type that the App Store server sends when you request it by calling the Request a Test
      * Notification endpoint. Call that endpoint to test whether your server is receiving notifications. You receive
      * this notification only at your request. For troubleshooting information, see
