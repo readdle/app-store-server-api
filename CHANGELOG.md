@@ -1,3 +1,9 @@
+### [3.13.0] 2025/08/13
+
+**IMPROVEMENTS:**
+
+- Introduced new field to `TransactionInfo`: `offerPeriod`
+
 ### [3.12.0] 2025/05/22
 
 **IMPROVEMENTS:**
