@@ -153,6 +153,26 @@ final class TransactionInfo implements JsonSerializable
     private ?string $offerIdentifier = null;
 
     /**
+     * The duration of the offer.
+     *
+     * This field is in ISO 8601 duration format.
+     * The following list shows examples of offer period values.
+     *
+     * - Value: P1M
+     *   - Single period length: 1 month
+     *   - Period count: 1
+     *
+     * - Value: P2M
+     *   - Single period length: 1 month
+     *   - Period count: 2
+     *
+     * - Value: P3D
+     *   - Single period length: 3 days
+     *   - Period count: 1
+     */
+    private ?string $offerPeriod = null;
+
+    /**
      * A value that represents the promotional offer type.
      */
     private ?int $offerType = null;
@@ -269,7 +289,7 @@ final class TransactionInfo implements JsonSerializable
             ],
             'string' => [
                 '?appAccountToken', '?appTransactionId', 'bundleId', '?currency', 'environment', 'inAppOwnershipType',
-                '?offerDiscountType', '?offerIdentifier', 'originalTransactionId', 'productId', '?storefront',
+                '?offerDiscountType', '?offerIdentifier', '?offerPeriod', 'originalTransactionId', 'productId', '?storefront',
                 '?storefrontId', '?subscriptionGroupIdentifier', 'transactionId', '?transactionReason',
                 'type', '?webOrderLineItemId',
             ],
