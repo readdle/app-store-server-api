@@ -392,6 +392,11 @@ final class TransactionInfo implements JsonSerializable
         return $this->offerDiscountType;
     }
 
+    public function getOfferPeriod(): ?string
+    {
+        return $this->offerPeriod;
+    }
+
     /**
      * Returns a value that represents the promotional offer type (if any).
      *
