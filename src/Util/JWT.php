@@ -200,18 +200,15 @@ final class JWT
         [$certificate, $intermediate, $root] = array_map([Helper::class, 'formatPEM'], $chain);
 
         if (openssl_x509_verify($certificate, $intermediate) !== 1) {
-            throw new Exception('Certificate verification failed');
+            throw new Exception('Certificate verification failed (' . (openssl_error_string() ?: 'unknown error') . ')');
         }
 
         if (openssl_x509_verify($intermediate, $root) !== 1) {
-            throw new Exception('Intermediate certificate verification failed');
+            throw new Exception('Intermediate certificate verification failed (' . (openssl_error_string() ?: 'unknown error') . ')');
         }
 
-        if (
-            !is_null($rootCertificate)
-            && openssl_x509_verify($root, Helper::formatPEM($rootCertificate)) !== 1
-        ) {
-            throw new Exception('Root certificate verification failed');
+        if ($rootCertificate && openssl_x509_verify($root, Helper::formatPEM($rootCertificate)) !== 1) {
+            throw new Exception('Root certificate verification failed (' . (openssl_error_string() ?: 'unknown error') . ')');
         }
     }
 
