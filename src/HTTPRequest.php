@@ -53,11 +53,27 @@ final class HTTPRequest
 
         $url = $request->composeURL();
 
+        $isErrorThrown = false;
+        $errorMessage = '';
+
+        set_error_handler(function ($errorCode, $error) use (&$isErrorThrown, &$errorMessage): bool {
+            $isErrorThrown = true;
+            $errorMessage = preg_replace('/^file_get_contents\([^)]+\): /', '', $error);
+
+            return true;
+        });
+
         $response = file_get_contents(
             $url,
             false,
             stream_context_create($options)
         );
+
+        restore_error_handler();
+
+        if ($isErrorThrown) {
+            throw new HTTPRequestFailed($httpMethod, $url, $errorMessage);
+        }
 
         if (empty($http_response_header)) {
             throw new HTTPRequestFailed($httpMethod, $url, 'No response headers found, probably empty response');

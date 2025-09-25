@@ -1,3 +1,7 @@
+### [3.15.0] 2025/09/25
+
+- Proper handling of failed HTTP requests added
+
 ### [3.14.0] 2025/09/08
 
 - `StoreKit2Transaction` and `StoreKit2AppTransaction` introduced
