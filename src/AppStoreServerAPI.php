@@ -24,11 +24,13 @@ use Readdle\AppStoreServerAPI\Request\LookUpOrderIdRequest;
 use Readdle\AppStoreServerAPI\Request\MassExtendSubscriptionRenewalDateRequest;
 use Readdle\AppStoreServerAPI\Request\RequestTestNotificationRequest;
 use Readdle\AppStoreServerAPI\Request\SendConsumptionInformationRequest;
+use Readdle\AppStoreServerAPI\Request\SetAppAccountTokenRequest;
 use Readdle\AppStoreServerAPI\RequestBody\AbstractRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\ConsumptionRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\ExtendRenewalDateRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\MassExtendRenewalDateRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\NotificationHistoryRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\UpdateAppAccountTokenRequestBody;
 use Readdle\AppStoreServerAPI\RequestQueryParams\AbstractRequestQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetAllSubscriptionStatusesQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetNotificationHistoryQueryParams;
@@ -137,6 +139,17 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
             ['transactionId' => $transactionId],
             null,
             new ConsumptionRequestBody($requestBody)
+        );
+    }
+
+    public function setAppAccountToken(string $transactionId, array $requestBody): void
+    {
+        $this->performRequest(
+            SetAppAccountTokenRequest::class,
+            null,
+            ['transactionId' => $transactionId],
+            null,
+            new UpdateAppAccountTokenRequestBody($requestBody)
         );
     }
 
