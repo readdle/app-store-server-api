@@ -32,7 +32,7 @@
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Readdle\\AppStoreServerAPI\\Tests": "tests/"
+			"Readdle\\AppStoreServerAPI\\Tests\\": "tests/"
 		}
 	},
 	"require": {
