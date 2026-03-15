@@ -24,6 +24,8 @@ abstract class AbstractRequestQueryParams extends AbstractRequestParamsBag
                 );
             } elseif (is_bool($value)) {
                 $queryStringParams[] = $propName . '=' . ($value ? 'true' : 'false');
+            } elseif (is_int($value)) {
+                $queryStringParams[] = $propName . '=' . $value;
             } else {
                 $queryStringParams[] = $propName . '=' . rawurlencode($value);
             }
