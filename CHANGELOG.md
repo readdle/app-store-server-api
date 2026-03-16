@@ -1,3 +1,16 @@
+### [3.16.0] 2026/03/16
+
+**BUGFIX:**
+
+- `composer.json`: `autoload-dev` PSR-4 namespace fixed
+- `AbstractRequestQueryParams::getQueryString()` integer values handling fixed
+- Unit tests added for `GetTransactionHistoryQueryParams::getQueryString()`
+
+**IMPROVEMENTS:**
+
+- `setAppAccountToken()` support added to `AppStoreServerAPI`
+- New request classes for the endpoint: `SetAppAccountTokenRequest`, `UpdateAppAccountTokenRequestBody`
+
 ### [3.15.0] 2025/09/25
 
 - Proper handling of failed HTTP requests added
