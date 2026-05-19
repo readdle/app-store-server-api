@@ -1,3 +1,7 @@
+### [3.17.0] 2026/05/19
+
+- `DecodedRealtimeRequestBody` and `RealtimeResponseBody` intorudced
+
 ### [3.16.0] 2026/03/16
 
 **BUGFIX:**
