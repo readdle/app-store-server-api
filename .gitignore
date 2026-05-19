@@ -4,3 +4,4 @@
 examples/credentials.json
 examples/notification.json
 vendor/
+composer.lock
