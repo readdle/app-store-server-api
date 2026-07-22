@@ -7,7 +7,7 @@ use Throwable;
 
 final class JWTCreationException extends AppStoreServerAPIException
 {
-    public function __construct(string $message, Throwable $previous = null)
+    public function __construct(string $message, ?Throwable $previous = null)
     {
         parent::__construct("JWT creation error: $message", 0, $previous);
     }
