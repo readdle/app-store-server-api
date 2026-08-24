@@ -342,8 +342,16 @@ final class ResponseBodyV2 implements JsonSerializable
             throw new AppStoreServerNotificationException('Notification does not contain "signedPayload" property');
         }
 
+        return self::createFromSignedPayload($notification['signedPayload'], $rootCertificate);
+    }
+
+    /**
+     * @throws AppStoreServerNotificationException
+     */
+    public static function createFromSignedPayload(string $signedPayload, ?string $rootCertificate = null): self
+    {
         try {
-            $payload = JWT::parse($notification['signedPayload'], $rootCertificate);
+            $payload = JWT::parse($signedPayload, $rootCertificate);
         } catch (MalformedJWTException $e) {
             throw new AppStoreServerNotificationException('Malformed JWT: ' . $e->getMessage());
         }

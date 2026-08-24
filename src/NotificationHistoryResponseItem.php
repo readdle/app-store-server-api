@@ -36,7 +36,7 @@ final class NotificationHistoryResponseItem implements JsonSerializable
         $this->signedPayload = $signedPayload;
 
         try {
-            $this->responseBodyV2 = ResponseBodyV2::createFromRawNotification("{\"signedPayload\":\"$signedPayload\"}");
+            $this->responseBodyV2 = ResponseBodyV2::createFromSignedPayload($signedPayload);
         } catch (AppStoreServerNotificationException $e) {
             // nothing to do with this hypothetical situation
         }
