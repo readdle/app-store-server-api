@@ -12,6 +12,6 @@ final class SetAppAccountTokenRequest extends AbstractRequest
 
     protected function getURLPattern(): string
     {
-        return '{baseUrl}/v1/transactions/{transactionId}/appAccountToken';
+        return '{baseUrl}/v1/transactions/{originalTransactionId}/appAccountToken';
     }
 }
