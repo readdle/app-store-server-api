@@ -1,3 +1,17 @@
+### [3.18.0] 2026/09/04
+
+**IMPROVEMENTS:**
+
+- `ResponseBodyV2::createFromSignedPayload()` introduced — decodes a `signedPayload` JWT directly instead of requiring it to be wrapped into a fake raw notification JSON first; `NotificationHistoryResponseItem` now uses it internally
+- Makefile: `lint-74` .. `lint-85` targets added (lint against PHP 7.4 through 8.5), plus `composer`, `stan`, and `test` shortcuts
+
+**BUGFIX:**
+
+- `AppStoreServerAPIInterface` was missing the `getTransactionHistoryV2()` and `setAppAccountToken()` declarations even though `AppStoreServerAPI` already implemented both — interface updated to match
+- `setAppAccountToken()`: parameter (and underlying request URL placeholder) renamed from `$transactionId` to `$originalTransactionId` to match what the endpoint actually expects (breaking change if you call this method using a named argument)
+- `JWT::verifyX509Chain()`: throws a proper exception when the `x5c` certificate chain doesn't contain exactly 3 certificates, instead of triggering an `Undefined array key` warning (which could previously surface as an uncaught `TypeError` further down)
+- `JWTCreationException::__construct()`: implicit nullable parameter deprecation fixed (`Throwable $previous = null` → `?Throwable $previous = null`)
+
 ### [3.17.0] 2026/05/19
 
 - `DecodedRealtimeRequestBody` and `RealtimeResponseBody` intorudced
