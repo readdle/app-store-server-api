@@ -30,7 +30,7 @@ final class AppMetadata implements JsonSerializable
 
     /**
      * The reason the customer requested the refund.
-     * 
+     *
      * This field appears only for CONSUMPTION_REQUEST notifications.
      */
     private ?string $consumptionRequestReason = null;
