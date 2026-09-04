@@ -142,12 +142,12 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
         );
     }
 
-    public function setAppAccountToken(string $transactionId, array $requestBody): void
+    public function setAppAccountToken(string $originalTransactionId, array $requestBody): void
     {
         $this->performRequest(
             SetAppAccountTokenRequest::class,
             null,
-            ['transactionId' => $transactionId],
+            ['originalTransactionId' => $originalTransactionId],
             null,
             new UpdateAppAccountTokenRequestBody($requestBody)
         );

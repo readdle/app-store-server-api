@@ -197,6 +197,10 @@ final class JWT
      */
     private static function verifyX509Chain(array $chain, ?string $rootCertificate = null): void
     {
+        if (count($chain) !== 3) {
+            throw new Exception('Invalid X509 chain length');
+        }
+
         [$certificate, $intermediate, $root] = array_map([Helper::class, 'formatPEM'], $chain);
 
         if (openssl_x509_verify($certificate, $intermediate) !== 1) {

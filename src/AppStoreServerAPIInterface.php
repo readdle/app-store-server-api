@@ -39,6 +39,17 @@ interface AppStoreServerAPIInterface
     public function getTransactionHistory(string $transactionId, array $queryParams = []): HistoryResponse;
 
     /**
+     * Get a customer's in-app purchase transaction history for your app
+     *
+     * @param string $transactionId The identifier of a transaction that belongs to the customer, and which may be an
+     * original transaction identifier
+     * @param array<string, mixed> $queryParams [optional] Query Parameters
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getTransactionHistoryV2(string $transactionId, array $queryParams = []): HistoryResponse;
+
+    /**
      * Get information about a single transaction for your app.
      *
      * @param string $transactionId The identifier of a transaction that belongs to the customer, and which may be an
@@ -70,6 +81,18 @@ interface AppStoreServerAPIInterface
      * @throws AppStoreServerAPIException
      */
     public function sendConsumptionInformation(string $transactionId, array $requestBody): void;
+
+    /**
+     * Sets the app account token value for a purchase the customer makes outside of your app
+     * or updates its value in an existing transaction.
+     *
+     * @param string $originalTransactionId The original transaction identifier of the transaction to receive the app
+     * account token update.
+     * @param array<string, int|string> $requestBody The request body that contains a valid app account token value.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function setAppAccountToken(string $originalTransactionId, array $requestBody): void;
 
     /**
      * Get a customer's in-app purchases from a receipt using the order ID.
