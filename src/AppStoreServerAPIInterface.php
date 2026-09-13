@@ -5,12 +5,16 @@ namespace Readdle\AppStoreServerAPI;
 
 use Readdle\AppStoreServerAPI\Exception\AppStoreServerAPIException;
 use Readdle\AppStoreServerAPI\Response\CheckTestNotificationResponse;
+use Readdle\AppStoreServerAPI\Response\DefaultConfigurationResponse;
 use Readdle\AppStoreServerAPI\Response\ExtendRenewalDateResponse;
+use Readdle\AppStoreServerAPI\Response\GetImageListResponse;
+use Readdle\AppStoreServerAPI\Response\GetMessageListResponse;
 use Readdle\AppStoreServerAPI\Response\HistoryResponse;
 use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateResponse;
 use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateStatusResponse;
 use Readdle\AppStoreServerAPI\Response\NotificationHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\OrderLookupResponse;
+use Readdle\AppStoreServerAPI\Response\RealtimeUrlResponse;
 use Readdle\AppStoreServerAPI\Response\RefundHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\SendTestNotificationResponse;
 use Readdle\AppStoreServerAPI\Response\StatusResponse;
@@ -179,4 +183,112 @@ interface AppStoreServerAPIInterface
      * @throws AppStoreServerAPIException
      */
     public function getTestNotificationStatus(string $testNotificationToken): CheckTestNotificationResponse;
+
+    /**
+     * Uploads an image to use for retention messaging.
+     *
+     * @param string $imageIdentifier A UUID you provide to uniquely identify the image you upload.
+     * @param string $imageData The raw binary contents of the PNG image file to upload.
+     * @param array<string, mixed> $queryParams [optional] Query Parameters, e.g. "imageSize"
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function uploadImage(string $imageIdentifier, string $imageData, array $queryParams = []): void;
+
+    /**
+     * Deletes a previously uploaded image.
+     *
+     * @param string $imageIdentifier The identifier of the image to delete.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function deleteImage(string $imageIdentifier): void;
+
+    /**
+     * Gets the image identifier and state for all uploaded images.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getImageList(): GetImageListResponse;
+
+    /**
+     * Uploads a message to use for retention messaging.
+     *
+     * @param string $messageIdentifier A UUID you provide to uniquely identify the message you upload.
+     * @param array<string, mixed> $requestBody The message text and optional image reference and bullet points.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function uploadMessage(string $messageIdentifier, array $requestBody): void;
+
+    /**
+     * Deletes a previously uploaded message.
+     *
+     * @param string $messageIdentifier The identifier of the message to delete.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function deleteMessage(string $messageIdentifier): void;
+
+    /**
+     * Gets the message identifier and state of all uploaded messages.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getMessageList(): GetMessageListResponse;
+
+    /**
+     * Configures a default message for a specific product in a specific locale.
+     *
+     * @param string $productId The product identifier for the default configuration.
+     * @param string $locale The locale for the default configuration.
+     * @param array<string, mixed> $requestBody The message identifier to configure as the default message.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function configureDefaultMessage(string $productId, string $locale, array $requestBody): void;
+
+    /**
+     * Gets the default message for a specific product in a specific locale, if it's configured.
+     *
+     * @param string $productId The product identifier of the message.
+     * @param string $locale The locale of the message.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getDefaultMessage(string $productId, string $locale): DefaultConfigurationResponse;
+
+    /**
+     * Deletes a default message for a product in a locale.
+     *
+     * @param string $productId The product ID of the default message configuration.
+     * @param string $locale The locale of the default message configuration.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function deleteDefaultMessage(string $productId, string $locale): void;
+
+    /**
+     * Configures the URL for your Get Retention Message endpoint in the sandbox and production environments.
+     *
+     * @param array<string, mixed> $requestBody The request body that includes your endpoint's URL.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function configureRealtimeUrl(array $requestBody): void;
+
+    /**
+     * Gets the URL for real-time messages that points to your Get Retention Message endpoint, which you previously
+     * configured.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function getRealtimeUrl(): RealtimeUrlResponse;
+
+    /**
+     * Deletes the URL for your Get Retention Message endpoint, in the sandbox or production environments.
+     *
+     * @throws AppStoreServerAPIException
+     */
+    public function deleteRealtimeUrl(): void;
 }

@@ -11,9 +11,19 @@ use Readdle\AppStoreServerAPI\Exception\InvalidImplementationException;
 use Readdle\AppStoreServerAPI\Exception\MalformedResponseException;
 use Readdle\AppStoreServerAPI\Exception\UnimplementedContentTypeException;
 use Readdle\AppStoreServerAPI\Request\AbstractRequest;
+use Readdle\AppStoreServerAPI\Request\ConfigureDefaultMessageRequest;
+use Readdle\AppStoreServerAPI\Request\ConfigureRealtimeUrlRequest;
+use Readdle\AppStoreServerAPI\Request\DeleteDefaultMessageRequest;
+use Readdle\AppStoreServerAPI\Request\DeleteImageRequest;
+use Readdle\AppStoreServerAPI\Request\DeleteMessageRequest;
+use Readdle\AppStoreServerAPI\Request\DeleteRealtimeUrlRequest;
 use Readdle\AppStoreServerAPI\Request\ExtendSubscriptionRenewalDateRequest;
 use Readdle\AppStoreServerAPI\Request\GetAllSubscriptionStatusesRequest;
+use Readdle\AppStoreServerAPI\Request\GetDefaultMessageRequest;
+use Readdle\AppStoreServerAPI\Request\GetImageListRequest;
+use Readdle\AppStoreServerAPI\Request\GetMessageListRequest;
 use Readdle\AppStoreServerAPI\Request\GetNotificationHistoryRequest;
+use Readdle\AppStoreServerAPI\Request\GetRealtimeUrlRequest;
 use Readdle\AppStoreServerAPI\Request\GetRefundHistoryRequest;
 use Readdle\AppStoreServerAPI\Request\GetStatusOfSubscriptionRenewalDateExtensionsRequest;
 use Readdle\AppStoreServerAPI\Request\GetTestNotificationStatusRequest;
@@ -25,24 +35,35 @@ use Readdle\AppStoreServerAPI\Request\MassExtendSubscriptionRenewalDateRequest;
 use Readdle\AppStoreServerAPI\Request\RequestTestNotificationRequest;
 use Readdle\AppStoreServerAPI\Request\SendConsumptionInformationRequest;
 use Readdle\AppStoreServerAPI\Request\SetAppAccountTokenRequest;
+use Readdle\AppStoreServerAPI\Request\UploadImageRequest;
+use Readdle\AppStoreServerAPI\Request\UploadMessageRequest;
 use Readdle\AppStoreServerAPI\RequestBody\AbstractRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\ConsumptionRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\DefaultConfigurationRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\ExtendRenewalDateRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\ImageRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\MassExtendRenewalDateRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\NotificationHistoryRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\RealtimeUrlRequestBody;
 use Readdle\AppStoreServerAPI\RequestBody\UpdateAppAccountTokenRequestBody;
+use Readdle\AppStoreServerAPI\RequestBody\UploadMessageRequestBody;
 use Readdle\AppStoreServerAPI\RequestQueryParams\AbstractRequestQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetAllSubscriptionStatusesQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetNotificationHistoryQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetRefundHistoryQueryParams;
 use Readdle\AppStoreServerAPI\RequestQueryParams\GetTransactionHistoryQueryParams;
+use Readdle\AppStoreServerAPI\RequestQueryParams\UploadImageQueryParams;
 use Readdle\AppStoreServerAPI\Response\AbstractResponse;
 use Readdle\AppStoreServerAPI\Response\CheckTestNotificationResponse;
+use Readdle\AppStoreServerAPI\Response\DefaultConfigurationResponse;
 use Readdle\AppStoreServerAPI\Response\ExtendRenewalDateResponse;
+use Readdle\AppStoreServerAPI\Response\GetImageListResponse;
+use Readdle\AppStoreServerAPI\Response\GetMessageListResponse;
 use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateResponse;
 use Readdle\AppStoreServerAPI\Response\MassExtendRenewalDateStatusResponse;
 use Readdle\AppStoreServerAPI\Response\NotificationHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\OrderLookupResponse;
+use Readdle\AppStoreServerAPI\Response\RealtimeUrlResponse;
 use Readdle\AppStoreServerAPI\Response\RefundHistoryResponse;
 use Readdle\AppStoreServerAPI\Response\SendTestNotificationResponse;
 use Readdle\AppStoreServerAPI\Response\HistoryResponse;
@@ -277,6 +298,122 @@ final class AppStoreServerAPI implements AppStoreServerAPIInterface
         );
         return $response;
 
+    }
+
+    public function uploadImage(string $imageIdentifier, string $imageData, array $queryParams = []): void
+    {
+        $this->performRequest(
+            UploadImageRequest::class,
+            null,
+            ['imageIdentifier' => $imageIdentifier],
+            new UploadImageQueryParams($queryParams),
+            new ImageRequestBody(['imageData' => $imageData])
+        );
+    }
+
+    public function deleteImage(string $imageIdentifier): void
+    {
+        $this->performRequest(
+            DeleteImageRequest::class,
+            null,
+            ['imageIdentifier' => $imageIdentifier]
+        );
+    }
+
+    public function getImageList(): GetImageListResponse
+    {
+        /**
+         * @var GetImageListResponse $response
+         */
+        $response = $this->performRequest(GetImageListRequest::class, GetImageListResponse::class);
+        return $response;
+    }
+
+    public function uploadMessage(string $messageIdentifier, array $requestBody): void
+    {
+        $this->performRequest(
+            UploadMessageRequest::class,
+            null,
+            ['messageIdentifier' => $messageIdentifier],
+            null,
+            new UploadMessageRequestBody($requestBody)
+        );
+    }
+
+    public function deleteMessage(string $messageIdentifier): void
+    {
+        $this->performRequest(
+            DeleteMessageRequest::class,
+            null,
+            ['messageIdentifier' => $messageIdentifier]
+        );
+    }
+
+    public function getMessageList(): GetMessageListResponse
+    {
+        /**
+         * @var GetMessageListResponse $response
+         */
+        $response = $this->performRequest(GetMessageListRequest::class, GetMessageListResponse::class);
+        return $response;
+    }
+
+    public function configureDefaultMessage(string $productId, string $locale, array $requestBody): void
+    {
+        $this->performRequest(
+            ConfigureDefaultMessageRequest::class,
+            null,
+            ['productId' => $productId, 'locale' => $locale],
+            null,
+            new DefaultConfigurationRequestBody($requestBody)
+        );
+    }
+
+    public function getDefaultMessage(string $productId, string $locale): DefaultConfigurationResponse
+    {
+        /**
+         * @var DefaultConfigurationResponse $response
+         */
+        $response = $this->performRequest(
+            GetDefaultMessageRequest::class,
+            DefaultConfigurationResponse::class,
+            ['productId' => $productId, 'locale' => $locale]
+        );
+        return $response;
+    }
+
+    public function deleteDefaultMessage(string $productId, string $locale): void
+    {
+        $this->performRequest(
+            DeleteDefaultMessageRequest::class,
+            null,
+            ['productId' => $productId, 'locale' => $locale]
+        );
+    }
+
+    public function configureRealtimeUrl(array $requestBody): void
+    {
+        $this->performRequest(
+            ConfigureRealtimeUrlRequest::class,
+            null,
+            [],
+            null,
+            new RealtimeUrlRequestBody($requestBody)
+        );
+    }
+
+    public function getRealtimeUrl(): RealtimeUrlResponse
+    {
+        /**
+         * @var RealtimeUrlResponse $response
+         */
+        $response = $this->performRequest(GetRealtimeUrlRequest::class, RealtimeUrlResponse::class);
+        return $response;
+    }
+
+    public function deleteRealtimeUrl(): void
+    {
+        $this->performRequest(DeleteRealtimeUrlRequest::class, null);
     }
 
     private function createRequest(

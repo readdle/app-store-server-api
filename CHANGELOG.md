@@ -1,3 +1,13 @@
+### [3.19.0] 2026/09/13
+
+**IMPROVEMENTS:**
+
+- Retention Messaging API support added to `AppStoreServerAPI`: `uploadImage()`, `deleteImage()`, `getImageList()`, `uploadMessage()`, `deleteMessage()`, `getMessageList()`, `configureDefaultMessage()`, `getDefaultMessage()`, `deleteDefaultMessage()`, `configureRealtimeUrl()`, `getRealtimeUrl()`, `deleteRealtimeUrl()`
+- New request classes: `UploadImageRequest`, `DeleteImageRequest`, `GetImageListRequest`, `UploadMessageRequest`, `DeleteMessageRequest`, `GetMessageListRequest`, `ConfigureDefaultMessageRequest`, `GetDefaultMessageRequest`, `DeleteDefaultMessageRequest`, `ConfigureRealtimeUrlRequest`, `GetRealtimeUrlRequest`, `DeleteRealtimeUrlRequest`
+- New request body/query params classes: `ImageRequestBody`, `UploadMessageRequestBody`, `DefaultConfigurationRequestBody`, `UploadImageQueryParams`, `RealtimeUrlRequestBody`
+- New response classes: `GetImageListResponse`, `GetMessageListResponse`, `DefaultConfigurationResponse`, `RealtimeUrlResponse` (and their item classes `GetImageListResponseItem`, `GetMessageListResponseItem`)
+- `AbstractRequest::HTTP_METHOD_DELETE` introduced
+
 ### [3.18.0] 2026/09/04
 
 **IMPROVEMENTS:**
