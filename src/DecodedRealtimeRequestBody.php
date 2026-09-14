@@ -71,8 +71,8 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
         $decodedRealtimeRequestBody = new self();
 
         $typeCaster = (new ArrayTypeCaseGenerator())($payload, [
-            'int' => ['signedDate'],
-            'string' => ['originalTransactionId', 'subtype', 'notificationUUID', 'version'],
+            'int' => ['signedDate', 'appAppleId'],
+            'string' => ['originalTransactionId', 'productId', 'locale', 'requestIdentifier', 'environment'],
         ]);
 
         foreach ($typeCaster as $prop => $value) {

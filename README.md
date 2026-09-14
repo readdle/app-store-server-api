@@ -189,3 +189,77 @@ Ask App Store Server Notifications to send a test notification to your server.
 `AppStoreServerAPI::getTestNotificationStatus(string $testNotificationToken)`
 
 Check the status of the test App Store server notification sent to your server.
+
+### [Retention Messaging](https://developer.apple.com/documentation/retentionmessaging)
+
+#### [Upload Image](https://developer.apple.com/documentation/retentionmessaging/upload-image)
+
+`AppStoreServerAPI::uploadImage(string $imageIdentifier, string $imageData, array $queryParams = [])`
+
+Uploads an image to use for retention messaging.
+
+#### [Delete Image](https://developer.apple.com/documentation/retentionmessaging/delete-image)
+
+`AppStoreServerAPI::deleteImage(string $imageIdentifier)`
+
+Deletes a previously uploaded image.
+
+#### [Get Image List](https://developer.apple.com/documentation/retentionmessaging/get-image-list)
+
+`AppStoreServerAPI::getImageList()`
+
+Gets the image identifier and state for all uploaded images.
+
+#### [Upload Message](https://developer.apple.com/documentation/retentionmessaging/upload-message)
+
+`AppStoreServerAPI::uploadMessage(string $messageIdentifier, array $requestBody)`
+
+Uploads a message to use for retention messaging.
+
+#### [Delete Message](https://developer.apple.com/documentation/retentionmessaging/delete-message)
+
+`AppStoreServerAPI::deleteMessage(string $messageIdentifier)`
+
+Deletes a previously uploaded message.
+
+#### [Get Message List](https://developer.apple.com/documentation/retentionmessaging/get-message-list)
+
+`AppStoreServerAPI::getMessageList()`
+
+Gets the message identifier and state of all uploaded messages.
+
+#### [Configure Default Message](https://developer.apple.com/documentation/retentionmessaging/configure-default-message)
+
+`AppStoreServerAPI::configureDefaultMessage(string $productId, string $locale, array $requestBody)`
+
+Configures a default message for a specific product in a specific locale.
+
+#### [Get Default Message](https://developer.apple.com/documentation/retentionmessaging/get-default-message)
+
+`AppStoreServerAPI::getDefaultMessage(string $productId, string $locale)`
+
+Gets the default message for a specific product in a specific locale, if it's configured.
+
+#### [Delete Default Message](https://developer.apple.com/documentation/retentionmessaging/delete-default-message)
+
+`AppStoreServerAPI::deleteDefaultMessage(string $productId, string $locale)`
+
+Deletes a default message for a product in a locale.
+
+#### [Configure Realtime URL](https://developer.apple.com/documentation/retentionmessaging/configure-realtime-url)
+
+`AppStoreServerAPI::configureRealtimeUrl(array $requestBody)`
+
+Configures the URL for your Get Retention Message endpoint in the sandbox and production environments.
+
+#### [Get Realtime URL](https://developer.apple.com/documentation/retentionmessaging/get-realtime-url)
+
+`AppStoreServerAPI::getRealtimeUrl()`
+
+Gets the URL for real-time messages that points to your Get Retention Message endpoint, which you previously configured.
+
+#### [Delete Realtime URL](https://developer.apple.com/documentation/retentionmessaging/delete-realtime-url)
+
+`AppStoreServerAPI::deleteRealtimeUrl()`
+
+Deletes the URL for your Get Retention Message endpoint, in the sandbox or production environments.
