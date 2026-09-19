@@ -29,7 +29,7 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
     /**
      * The user's locale.
      */
-    private string $locale;
+    private string $userLocale;
 
     /**
      * A UUID the App Store server creates to uniquely identify each request.
@@ -72,7 +72,7 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
 
         $typeCaster = (new ArrayTypeCaseGenerator())($payload, [
             'int' => ['signedDate', 'appAppleId'],
-            'string' => ['originalTransactionId', 'productId', 'locale', 'requestIdentifier', 'environment'],
+            'string' => ['originalTransactionId', 'productId', 'userLocale', 'requestIdentifier', 'environment'],
         ]);
 
         foreach ($typeCaster as $prop => $value) {
@@ -97,9 +97,9 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
         return $this->productId;
     }
 
-    public function getLocale(): string
+    public function getUserLocale(): string
     {
-        return $this->locale;
+        return $this->userLocale;
     }
 
     public function getRequestIdentifier(): string
@@ -110,6 +110,30 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
     public function getSignedDate(): int
     {
         return $this->signedDate;
+    }
+
+    /**
+     * Returns the number of milliseconds elapsed since the App Store signed this request.
+     */
+    public function getMillisecondsSinceSigned(): int
+    {
+        return (int) round(microtime(true) * 1000) - $this->signedDate;
+    }
+
+    /**
+     * Returns the number of seconds elapsed since the App Store signed this request.
+     */
+    public function getSecondsSinceSigned(): int
+    {
+        return intdiv($this->getMillisecondsSinceSigned(), 1000);
+    }
+
+    /**
+     * Returns whether this request is older than the given TTL, in seconds.
+     */
+    public function isExpired(int $ttlSeconds): bool
+    {
+        return $this->getSecondsSinceSigned() >= $ttlSeconds;
     }
 
     public function getEnvironment(): string
