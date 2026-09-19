@@ -117,7 +117,7 @@ final class DecodedRealtimeRequestBody implements JsonSerializable
      */
     public function getMillisecondsSinceSigned(): int
     {
-        return (int) round(microtime(true) * 1000) - $this->signedDate;
+        return (int) floor(microtime(true) * 1000) - $this->signedDate;
     }
 
     /**

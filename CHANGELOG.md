@@ -6,7 +6,7 @@
 
 **BUGFIX:**
 
-- `DecodedRealtimeRequestBody`: `locale` property and `getLocale()` renamed to `userLocale` / `getUserLocale()` (breaking change if you called `getLocale()` or relied on the `locale` payload key)
+- `DecodedRealtimeRequestBody`: `locale` property and `getLocale()` renamed to `userLocale` / `getUserLocale()`
 
 ### [3.19.0] 2026/09/13
 
