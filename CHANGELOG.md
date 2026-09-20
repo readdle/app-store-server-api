@@ -1,3 +1,13 @@
+### [3.19.1] 2026/09/19
+
+**IMPROVEMENTS:**
+
+- `DecodedRealtimeRequestBody::getMillisecondsSinceSigned()`, `getSecondsSinceSigned()` and `isExpired()` introduced — allow checking how long ago the App Store signed the request and whether it has exceeded a given TTL
+
+**BUGFIX:**
+
+- `DecodedRealtimeRequestBody`: `locale` property and `getLocale()` renamed to `userLocale` / `getUserLocale()`
+
 ### [3.19.0] 2026/09/13
 
 **IMPROVEMENTS:**
